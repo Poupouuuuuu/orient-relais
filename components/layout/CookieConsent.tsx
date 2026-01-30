@@ -1,0 +1,66 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { X } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+export function CookieConsent() {
+    const [isVisible, setIsVisible] = useState(false);
+
+    useEffect(() => {
+        // Check if user has already made a choice
+        const consent = localStorage.getItem("cookieConsent");
+        if (consent === null) {
+            // Show banner after a short delay for better UX
+            const timer = setTimeout(() => setIsVisible(true), 1000);
+            return () => clearTimeout(timer);
+        }
+    }, []);
+
+    const handleAccept = () => {
+        localStorage.setItem("cookieConsent", "true");
+        setIsVisible(false);
+    };
+
+    const handleDecline = () => {
+        localStorage.setItem("cookieConsent", "false");
+        setIsVisible(false);
+    };
+
+    if (!isVisible) return null;
+
+    return (
+        <div className={cn(
+            "fixed bottom-0 left-0 right-0 z-50 p-4 md:p-6",
+            "bg-stone-900 border-t border-stone-800 shadow-2xl",
+            "animate-in slide-in-from-bottom duration-500"
+        )}>
+            <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-4 md:gap-8">
+                <div className="flex-1 text-center md:text-left">
+                    <h3 className="text-lg font-serif font-bold text-white mb-2">Respect de votre vie privée</h3>
+                    <p className="text-sm text-stone-400 leading-relaxed max-w-2xl">
+                        Nous utilisons des cookies pour améliorer votre expérience, analyser le trafic et personnaliser le contenu. 
+                        En cliquant sur "Accepter", vous consentez à l'utilisation de tous les cookies. 
+                        Vous pouvez refuser ou modifier vos préférences à tout moment.
+                    </p>
+                </div>
+                <div className="flex gap-3 shrink-0">
+                    <Button 
+                        variant="outline" 
+                        onClick={handleDecline}
+                        className="bg-transparent text-white border-stone-600 hover:bg-stone-800 hover:text-white"
+                    >
+                        Refuser
+                    </Button>
+                    <Button 
+                        onClick={handleAccept}
+                        className="bg-primary hover:bg-orange-600 text-white font-medium"
+                    >
+                        Accepter
+                    </Button>
+                </div>
+            </div>
+        </div>
+    );
+}

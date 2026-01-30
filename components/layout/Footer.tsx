@@ -13,8 +13,10 @@ export function Footer() {
                         <div>
                             <h3 className="font-serif text-2xl font-bold text-white mb-2">Orient Relais</h3>
                             <p className="text-sm text-stone-400 leading-relaxed">
-                                L&apos;excellence du Savon d&apos;Alep et la sagesse de l&apos;Ayurvéda.
-                                Bio, Éthique & Ancestral.
+                                48 avenue de Touraine<br />
+                                78310 MAUREPAS<br />
+                                Tél : 06 99 55 69 77<br />
+                                Email : contact@orient-relais.com
                             </p>
                         </div>
                         <div className="flex gap-4">
@@ -84,7 +86,7 @@ export function Footer() {
 
                 <div className="border-t border-stone-800 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
                     <p className="text-xs text-stone-500">
-                        © 2026 Orient Relais. SIRET 123 456 789 00012.
+                        © 2026 Orient Relais. SIRET 924 298 540 00015.
                     </p>
                     <div className="flex gap-6 text-xs text-stone-500">
                         <Link href="/mentions-legales" className="hover:text-stone-300">Mentions Légales</Link>

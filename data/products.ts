@@ -22,6 +22,8 @@ export interface Product {
     ingredients?: string[];
     usage?: string;
     weight?: string;
+    certifications?: string[]; // e.g. ['bio', 'cosmos', 'ecocert', 'france', 'vegan', 'ab', 'gelules']
+    details?: Record<string, string>; // e.g. { "EAN": "..." }
 }
 
 // ==========================================
@@ -153,6 +155,169 @@ export const SAVONS: Product[] = [
 ];
 
 // ==========================================
+// SOINS & COSMÉTIQUES
+// ==========================================
+export const SOINS: Product[] = [
+    {
+        id: "manjistha-poudre",
+        title: "Manjistha (Garance indienne) Bio – Poudre Ayurvédique 100g",
+        slug: "manjistha-poudre-100g",
+        price: 8.95,
+        description: `<h3>🌿 Le trésor ayurvédique pour la peau et les cheveux</h3>
+
+<p>Le <strong>Manjistha</strong> (<em>Rubia cordifolia</em>), également appelé <strong>Garance indienne</strong>, est l'une des plantes les plus vénérées de la médecine ayurvédique. Récoltée pour ses racines d'un rouge vif caractéristique, cette plante de la famille des <em>Rubiaceae</em> est utilisée depuis des millénaires en Inde pour ses propriétés <strong>purifiantes</strong> et <strong>régénérantes</strong> exceptionnelles.</p>
+
+<h4>✨ Pourquoi choisir le Manjistha ?</h4>
+
+<p>Surnommée « l'herbe qui purifie le sang » en Ayurvéda, la poudre de Manjistha est un <strong>puissant détoxifiant naturel</strong>. Sa richesse en anthraquinones (rubiadine, purpurine, alizarine) lui confère des propriétés <strong>anti-inflammatoires</strong>, <strong>antioxydantes</strong> et <strong>antibactériennes</strong> scientifiquement reconnues.</p>
+
+<h4>🎨 Coloration capillaire naturelle</h4>
+
+<p>Le nom « Manjistha » signifie « rouge vif » en sanskrit. Cette poudre offre une <strong>coloration naturelle aux reflets acajou</strong>, idéale pour couvrir les cheveux gris tout en respectant la fibre capillaire. Associée au henné ou à l'hibiscus, elle sublime votre chevelure sans produits chimiques.</p>
+
+<h4>🏆 Certification & Qualité</h4>
+
+<p>Notre Manjistha bio Ayur-vana est <strong>labellisé Cosmos Organic</strong> par Ecocert, la certification la plus rigoureuse pour les cosmétiques. 100% des ingrédients sont d'origine naturelle et issus de l'agriculture biologique. <strong>Conditionné en France</strong> pour garantir fraîcheur et traçabilité.</p>`,
+        shortDescription: "Poudre ayurvédique bio pour coloration naturelle, éclat du teint et purification de la peau.",
+        image: "/products/manjistha.jpg",
+        category: "soins",
+        badges: [{ text: "Cosmos Organic", color: "green" }, { text: "Vegan", color: "green" }, { text: "Made in France", color: "stone" }],
+        rating: 5.0,
+        reviews: 1,
+        inStock: true,
+        weight: "100g",
+        benefits: [
+            "🌿 Cheveux : Coloration naturelle acajou • Fortifie les racines • Réduit la chute • Élimine les pellicules",
+            "✨ Peau : Unifie le teint • Réduit les taches • Anti-acné • Apaise les irritations",
+            "💧 Détox : Purifie le sang • Élimine les toxines • Action anti-inflammatoire",
+            "🧘 Ayurvéda : Équilibre Pitta & Kapha • Régénère les cellules • Antioxydant puissant"
+        ],
+        usage: `<h4>💆 Coloration capillaire 100% naturelle</h4>
+<ol>
+<li>Mélangez la poudre avec de l'<strong>eau tiède</strong> jusqu'à obtenir une pâte onctueuse (consistance yaourt).</li>
+<li>Appliquez <strong>mèche par mèche</strong> sur cheveux propres et secs.</li>
+<li>Enveloppez dans un film plastique et laissez poser <strong>1h minimum</strong> (jusqu'à 3h pour plus d'intensité).</li>
+<li>Rincez abondamment. <em>Évitez le shampoing pendant 48h</em> pour laisser la couleur se développer.</li>
+</ol>
+
+<p><strong>💡 Astuce :</strong> Mélangez avec de la poudre d'hibiscus et un peu de henné pour des reflets cuivrés plus intenses.</p>
+
+<h4>🧴 Masque visage purifiant</h4>
+<ol>
+<li>Mélangez 1 c. à soupe de poudre avec du <strong>miel</strong> ou de l'<strong>eau de rose</strong>.</li>
+<li>Appliquez sur le visage en évitant le contour des yeux.</li>
+<li>Laissez poser <strong>15-20 minutes</strong> puis rincez à l'eau tiède.</li>
+</ol>
+
+<p><strong>⚠️ Précaution :</strong> Poudre colorante. Testez sur une zone non visible avant utilisation. Utilisez des gants.</p>`,
+        ingredients: ["Rubia Cordifolia root powder* (*100% issu de l'agriculture biologique)"],
+        certifications: ["bio", "cosmos", "ecocert", "france", "vegan"]
+    },
+    {
+        id: "baume-demaquillant",
+        title: "Baume démaquillant - 120 gr",
+        slug: "baume-demaquillant",
+        price: 12.00,
+        description: "Baume démaquillant doux et efficace pour nettoyer la peau en profondeur tout en respectant son équilibre naturel.",
+        shortDescription: "Baume démaquillant naturel 120g.",
+        image: "/products/baume-demaquillant.jpg",
+        category: "soins",
+        badges: [{ text: "Naturel", color: "green" }],
+        rating: 4.5,
+        reviews: 0,
+        inStock: true,
+        weight: "120g"
+    },
+    {
+        id: "baume-soin-coco",
+        title: "Baume soin coco",
+        slug: "baume-soin-coco",
+        price: 12.00,
+        description: "Baume nourrissant à la noix de coco. Idéal pour hydrater et adoucir la peau et les cheveux.",
+        shortDescription: "Baume soin nourrissant à la coco.",
+        image: "/products/baume-soin-coco.jpg",
+        category: "soins",
+        badges: [{ text: "Nourrissant", color: "orange" }],
+        rating: 4.6,
+        reviews: 0,
+        inStock: true,
+    },
+    {
+        id: "creme-hydratante-mains",
+        title: "Crème hydratante mains et ongles",
+        slug: "creme-hydratante-mains-et-ongles",
+        price: 6.00,
+        originalPrice: 8.00,
+        description: "Crème douce et hydratante pour les mains et les ongles. Pénètre rapidement sans laisser de film gras.",
+        shortDescription: "Soin hydratant mains et ongles.",
+        image: "/products/creme-mains.jpg",
+        category: "soins",
+        badges: [{ text: "Promo", color: "orange" }],
+        rating: 5.0,
+        reviews: 1,
+        inStock: true,
+    },
+    {
+        id: "elixir-trois-huiles",
+        title: "Élixir aux trois huiles (fleur oranger)",
+        slug: "elixir-aux-trois-huiles-fleur-oranger",
+        price: 10.00,
+        originalPrice: 12.00,
+        description: "Un mélange précieux de trois huiles aux notes délicates de fleur d'oranger pour sublimer la peau.",
+        shortDescription: "Élixir beauté fleur d'oranger.",
+        image: "/products/elixir-huiles.jpg",
+        category: "soins",
+        badges: [{ text: "Promo", color: "orange" }, { text: "Luxe", color: "stone" }],
+        rating: 4.8,
+        reviews: 0,
+        inStock: true,
+    },
+    {
+        id: "gommage-visage-argile",
+        title: "Gommage visage à l’argile et aux agrumes",
+        slug: "gommage-visage-a-largile-et-aux-agrumes",
+        price: 12.00,
+        description: "Gommage purifiant à l'argile enrichi aux agrumes pour un teint éclatant et une peau nette.",
+        shortDescription: "Gommage purifiant argile et agrumes.",
+        image: "/products/gommage-argile.jpg",
+        category: "soins",
+        badges: [{ text: "Purifiant", color: "green" }],
+        rating: 4.7,
+        reviews: 0,
+        inStock: true,
+    },
+    {
+        id: "huile-figue-barbarie",
+        title: "Huile de graines de figue de Barbarie",
+        slug: "huile-de-graines-de-figue-de-barbarie",
+        price: 25.00,
+        description: "L'huile de figue de Barbarie est un anti-âge puissant, riche en stérols et en vitamine E. Elle redonne fermeté et tonus à la peau.",
+        shortDescription: "Huile précieuse anti-âge.",
+        image: "/products/huile-figue-barbarie.jpg",
+        category: "soins",
+        badges: [{ text: "Anti-âge", color: "stone" }, { text: "Précieux", color: "orange" }],
+        rating: 4.9,
+        reviews: 0,
+        inStock: true,
+    },
+    {
+        id: "huile-seche-dattier",
+        title: "Huile sèche de dattier du désert",
+        slug: "huile-seche-de-dattier-du-desert",
+        price: 17.50,
+        originalPrice: 18.00,
+        description: "Huile sèche au toucher soyeux, extraite du dattier du désert. Nourrit et répare sans graisser.",
+        shortDescription: "Huile sèche nourrissante et réparatrice.",
+        image: "/products/huile-dattier.jpg",
+        category: "soins",
+        badges: [{ text: "Promo", color: "orange" }, { text: "Rare", color: "stone" }],
+        rating: 4.7,
+        reviews: 0,
+        inStock: true,
+    }
+];
+
+// ==========================================
 // COMPLÉMENTS ALIMENTAIRES BIO
 // ==========================================
 export const COMPLEMENTS: Product[] = [
@@ -256,22 +421,6 @@ export const COMPLEMENTS: Product[] = [
         weight: "60 gélules"
     },
     {
-        id: "guduchi",
-        title: "GUDUCHI BIO 60 GÉLULES 570 MG",
-        slug: "guduchi-bio-60-gelules",
-        price: 13.00,
-        description: "Le Guduchi (Tinospora cordifolia) est une plante adaptogène majeure de l'Ayurvéda. Elle aide à renforcer les défenses naturelles et à maintenir l'équilibre du corps.",
-        shortDescription: "Plante adaptogène pour renforcer les défenses.",
-        image: "/products/guduchi.jpg",
-        category: "complements-alimentaires",
-        badges: [{ text: "Bio", color: "green" }, { text: "Adaptogène", color: "orange" }],
-        rating: 4.6,
-        reviews: 35,
-        inStock: true,
-        benefits: ["Adaptogène", "Immunité", "Équilibre"],
-        weight: "60 gélules - 570mg"
-    },
-    {
         id: "huile-nigelle-capsules",
         title: "Huile de Nigelle Bio – 120 capsules",
         slug: "huile-nigelle-bio-120-capsules",
@@ -321,22 +470,7 @@ export const COMPLEMENTS: Product[] = [
         benefits: ["Ossature", "Calcium", "Magnésium"],
         weight: "90 gélules"
     },
-    {
-        id: "manjistha",
-        title: "Manjistha certifié bio – 100 g",
-        slug: "manjistha-bio-100g",
-        price: 9.00,
-        description: "Le Manjistha (Rubia cordifolia) est une plante ayurvédique puissante, connue pour ses propriétés purifiantes du sang et son action bénéfique sur la peau.",
-        shortDescription: "Plante purifiante pour une peau saine.",
-        image: "/products/manjistha.jpg",
-        category: "complements-alimentaires",
-        badges: [{ text: "Bio", color: "green" }, { text: "Peau", color: "stone" }],
-        rating: 4.6,
-        reviews: 31,
-        inStock: true,
-        benefits: ["Purifiant", "Peau", "Détox"],
-        weight: "100g poudre"
-    },
+
     {
         id: "miel-bourdaine-250",
         title: "Miel de Bourdaine 250G",
@@ -560,6 +694,21 @@ export const COFFRETS: Product[] = [
         reviews: 29,
         inStock: true,
         benefits: ["Minéraux", "Purification", "Régénération"],
+    },
+    {
+        id: "coffret-najel-decouverte",
+        title: "COFFRET CADEAU NAJEL Découverte d’Alep",
+        slug: "coffret-cadeau-najel-decouverte-alep",
+        price: 30.00,
+        description: "Un voyage authentique à Alep à travers ce coffret découverte des produits traditionnels Najel.",
+        shortDescription: "Coffret découverte produits d'Alep.",
+        image: "/products/coffret-najel-decouverte.jpg",
+        category: "coffrets",
+        badges: [{ text: "Découverte", color: "green" }],
+        rating: 4.8,
+        reviews: 0,
+        inStock: true,
+        benefits: ["Tradition", "Découverte", "Cadeau"],
     }
 ];
 
@@ -602,14 +751,182 @@ export const ACCESSOIRES: Product[] = [
 ];
 
 // ==========================================
+// NEW SUPPLEMENTS
+// ==========================================
+const NEW_SUPPLEMENTS: Product[] = [
+    {
+        id: "curcuma-pepper",
+        title: "Curcuma Pepper (Ayur-vana) – 60 gélules",
+        slug: "curcuma-pepper-60-gelules",
+        price: 13.50,
+        description: "L'association traditionnelle Ayurvédique du Curcuma et du Poivre noir pour une biodisponibilité optimale. Puissant anti-inflammatoire et antioxydant naturel.",
+        shortDescription: "Curcuma + Poivre noir pour une action renforcée.",
+        image: "/products/curcuma-pepper.jpg",
+        category: "complements-alimentaires",
+        badges: [{ text: "Bio", color: "green" }, { text: "Articulations", color: "orange" }],
+        rating: 4.8,
+        reviews: 0,
+        inStock: true,
+        benefits: ["Anti-inflammatoire", "Articulations", "Digestion"],
+        weight: "60 gélules"
+    },
+    {
+        id: "musta-60-gelules",
+        title: "MUSTA 60 GÉLULES VÉGÉTALES 335 MG",
+        slug: "musta-60-gellules-vegetales-335-mg",
+        price: 12.50,
+        description: "Le Musta est une plante ayurvédique utilisée pour soutenir la digestion et le métabolisme.",
+        shortDescription: "Plante ayurvédique digestion et métabolisme.",
+        image: "/products/musta.jpg",
+        category: "complements-alimentaires",
+        badges: [{ text: "Ayurvéda", color: "green" }],
+        rating: 4.5,
+        reviews: 0,
+        inStock: true,
+        weight: "60 gélules"
+    },
+    {
+        id: "myrtille-acerola",
+        title: "Myrtille Acérola bio – 90 gélules",
+        slug: "myrtille-acerola-bio-90-gelules",
+        price: 10.00,
+        originalPrice: 12.00,
+        description: "Synergie antioxydante de Myrtille et Acérola, riche en vitamine C naturelle pour le tonus et la protection cellulaire.",
+        shortDescription: "Complexe antioxydant et tonus.",
+        image: "/products/myrtille-acerola.jpg",
+        category: "complements-alimentaires",
+        badges: [{ text: "Promo", color: "orange" }, { text: "Bio", color: "green" }],
+        rating: 4.7,
+        reviews: 0,
+        inStock: true,
+        weight: "90 gélules"
+    },
+    {
+        id: "ravasana-bio",
+        title: "Ravasana bio – 60 gélules",
+        slug: "ravasana-bio-60-gelules",
+        price: 14.50,
+        originalPrice: 16.00,
+        description: "Le Ravasana est apprécié pour ses vertus apaisantes et équilibrantes.",
+        shortDescription: "Plante bien-être et équilibre.",
+        image: "/products/ravasana.jpg",
+        category: "complements-alimentaires",
+        badges: [{ text: "Promo", color: "orange" }, { text: "Bio", color: "green" }],
+        rating: 4.6,
+        reviews: 0,
+        inStock: true,
+        weight: "60 gélules"
+    },
+    {
+        id: "shilajit",
+        title: "Shilajit",
+        slug: "shilajit",
+        price: 21.99,
+        description: "Le Shilajit est une résine minérale rare de l'Himalaya, riche en acide fulvique et minéraux, connue comme revitalisant puissant.",
+        shortDescription: "Résine minérale revitalisante de l'Himalaya.",
+        image: "/products/shilajit.jpg",
+        category: "complements-alimentaires",
+        badges: [{ text: "Puissant", color: "stone" }, { text: "Rare", color: "orange" }],
+        rating: 4.9,
+        reviews: 0,
+        inStock: true,
+    },
+    {
+        id: "miel-bourdaine-500",
+        title: "Miel de Bourdaine 500 G",
+        slug: "miel-de-bourdaine-500-g",
+        price: 12.50,
+        description: "Grand format 500g du Miel de Bourdaine. Miel rare aux propriétés digestives reconnu.",
+        shortDescription: "Miel de Bourdaine grand format.",
+        image: "/products/miel-bourdaine.jpg",
+        category: "complements-alimentaires",
+        subcategory: "miels",
+        badges: [{ text: "Grand format", color: "stone" }],
+        rating: 4.9,
+        reviews: 0,
+        inStock: true,
+        weight: "500g"
+    },
+    {
+        id: "miel-montagne-500",
+        title: "Miel de Montagne 500G",
+        slug: "miel-de-montagne-500g",
+        price: 12.50,
+        description: "Grand format 500g du Miel de Montagne. La richesse de la flore de montagne en pot.",
+        shortDescription: "Miel de Montagne grand format.",
+        image: "/products/miel-montagne.jpg",
+        category: "complements-alimentaires",
+        subcategory: "miels",
+        badges: [{ text: "Grand format", color: "stone" }],
+        rating: 4.9,
+        reviews: 0,
+        inStock: true,
+        weight: "500g"
+    },
+    {
+        id: "guduchi-bio",
+        title: "Guduchi bio - 60 gélules",
+        slug: "guduchi-bio-60-gelules",
+        price: 16.45,
+        description: `<h3>🌿 Stimulation des défenses naturelles</h3>
+
+<p>Quand l'organisme est à plat, les maladies s'enchaînent et la fatigue s'accumule. Le <strong>Guduchi</strong> va alors être un allié précieux pour retrouver du tonus et renforcer les défenses naturelles. Il s'utilise aussi en prévention.</p>
+
+<p>Le Guduchi, végétal originaire d’Inde, est utilisé en Ayurveda pour renforcer le système des défenses immunitaires.</p>
+
+<p>La fatigue, l’impression d’attraper tous les virus qui circulent, la nervosité et parfois même le stress sont autant de signes qui indiquent que l’organisme est « à plat ». Il n’est plus en état de se défendre correctement. C’est à ce moment-là que le Guduchi va révéler toute son utilité.</p>
+
+<p>Il stimule le système immunitaire, tonifie l’organisme en général et potentialise les effets du Shatavari et de l’Ashwagandha.</p>
+
+<p>Le Guduchi se consomme à la fois en prévention, notamment grâce à sa richesse naturelle en antioxydants et alcaloïdes et en soutien, pour se rétablir plus vite pendant les périodes de convalescence. Bienfait sans doute dû aux minéraux dont il regorge (calcium, phosphore, fer, cuivre, zinc et manganèse).</p>
+
+<p>En médecine ayurvédique, le Guduchi est aussi appelé Amrit. Ce terme sanscrit signifie littéralement "nectar" ou "ambroisie". La classification de cette plante en tant qu'Amrit indique le statut élevé et son caractère sacré dans l'Ayurveda.</p>
+
+<p><strong>Le saviez-vous ?</strong> Le Guduchi est une jolie plante grimpante avec des feuilles en forme de cœur. On raconte qu’il peut survivre sans recevoir d’eau ni de terre, subsistant seulement grâce à l’air ambiant.</p>`,
+        shortDescription: "Plante ayurvédique pour l'immunité et le tonus.",
+        image: "/products/guduchi.jpg",
+        category: "complements-alimentaires",
+        badges: [{ text: "Bio", color: "green" }, { text: "Vegan", color: "green" }],
+        rating: 4.8,
+        reviews: 15,
+        inStock: true,
+        weight: "60 gélules",
+        benefits: [
+            "🛡️ Immunité : Renforce les défenses naturelles • Prévient les infections",
+            "⚡ Tonus : Revitalisant • Anti-fatigue • Convalescence",
+            "🌿 Détox : Antioxydant puissant • Riche en minéraux",
+            "🧘 Ayurvéda : Équilibre les 3 doshas (surtout Pitta) • Plante sacrée Amrit"
+        ],
+        usage: "1 à 2 gélules par jour au moment des repas.",
+        ingredients: ["Tiges de guduchi* (Tinospora cordifolia) 900mg pour 2 gélules", "Gélule végétale (hypromellose)", "*Produit issu de l’agriculture biologique certifié par FR-BIO-01"],
+        certifications: ["ab", "ecocert", "france", "gelules", "vegan"],
+        details: {
+            "Ean": "3760089423363",
+            "Conditionnement": "Pilulier de 60 gélules végétales",
+            "Caractéristiques": "Plantes indiennes, complément alimentaire contrôlé et fabriqué en France.",
+            "Durée d'utilisation": "1 pilulier = 30 jours d'utilisation.",
+            "Marque": "Ayur-vana",
+            "Pays de fabrication": "France",
+            "Indications ayurvédiques": "Bien qu'il soit traditionnellement utilisé pour éliminer les excès de Pitta, le Guduchi peut équilibrer tous les doshas.",
+            "Précautions d'usage": "Déconseillé aux femmes enceintes ou allaitantes, aux enfants et adolescents, aux personnes diabétiques ainsi qu'aux personnes présentant des troubles hépatiques ou cardiaques.",
+            "Règles de tri": "Boîte couvercle et opercule à mettre au bac de tri jaune.",
+            "Poids/Volume net": "33.9 g",
+            "Prix au Kg/L": "511,94 €"
+        }
+    }
+];
+
+// ==========================================
 // ALL PRODUCTS
 // ==========================================
 export const ALL_PRODUCTS: Product[] = [
     ...SAVONS,
     ...COMPLEMENTS,
+    ...NEW_SUPPLEMENTS,
     ...HUILES_ESSENTIELLES,
     ...COFFRETS,
-    ...ACCESSOIRES
+    ...ACCESSOIRES,
+    ...SOINS
 ];
 
 // ==========================================
@@ -634,7 +951,9 @@ export function getPromoProducts(): Product[] {
 // Categories config
 export const CATEGORIES = [
     { slug: "savons", title: "Savons Bio", description: "Savons d'Alep authentiques et naturels" },
+    { slug: "soins", title: "Soins & Cosmétiques", description: "Baumes, crèmes et soins naturels pour le corps" },
     { slug: "complements-alimentaires", title: "Compléments Alimentaires", description: "Compléments naturels et bio pour votre santé" },
+
     { slug: "huiles-essentielles", title: "Huiles Essentielles Bio", description: "Huiles essentielles 100% pures et naturelles" },
     { slug: "coffrets", title: "Coffrets Cadeaux", description: "Coffrets bien-être à offrir ou se faire plaisir" },
     { slug: "accessoires", title: "Accessoires", description: "Accessoires naturels pour vos rituels beauté" },

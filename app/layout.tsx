@@ -3,6 +3,7 @@ import { Playfair_Display, Lato } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { CookieConsent } from "@/components/layout/CookieConsent";
 import { CartProvider } from "@/context/CartContext";
 
 const playfair = Playfair_Display({
@@ -43,6 +44,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             {children}
           </main>
           <Footer />
+          <CookieConsent />
         </CartProvider>
       </body>
     </html>

@@ -25,6 +25,7 @@ export function Header() {
         { href: "/categorie/savons", label: "Savons d'Alep", desc: "L'authentique soin millénaire" },
         { href: "/categorie/huiles-essentielles", label: "Huiles Essentielles", desc: "Pureté Terra Etica" },
         { href: "/categorie/complements-alimentaires", label: "Compléments", desc: "Bien-être au naturel" },
+        { href: "/categorie/soins", label: "Soins & Cosmétiques", desc: "Beauté naturelle" },
         { href: "/categorie/coffrets", label: "Coffrets Cadeaux", desc: "Pour faire plaisir" },
     ];
 
