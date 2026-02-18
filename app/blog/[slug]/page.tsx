@@ -24,7 +24,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
             {/* Article Header */}
             <header className="max-w-4xl mx-auto text-center mb-12">
-                <span className="inline-block px-3 py-1 rounded-full bg-orange-100 text-orange-800 text-xs font-bold uppercase tracking-wider mb-4">
+                <span className="inline-block px-3 py-1 rounded-full bg-primary/15 text-primary text-xs font-bold uppercase tracking-wider mb-4">
                     {article.category}
                 </span>
                 <h1 className="font-serif text-3xl md:text-5xl font-bold text-stone-900 mb-6 leading-tight">
@@ -96,7 +96,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             )}
 
             {/* CTA */}
-            <section className="max-w-4xl mx-auto mt-16 bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl p-8 text-center border border-orange-100">
+            <section className="max-w-4xl mx-auto mt-16 bg-gradient-to-r from-amber-50/70 to-stone-50 rounded-2xl p-8 text-center border border-primary/10">
                 <h3 className="font-serif text-xl font-bold text-stone-900 mb-2">Découvrez nos produits</h3>
                 <p className="text-stone-600 mb-4">Retrouvez tous les produits mentionnés dans cet article sur notre boutique.</p>
                 <Link href="/boutique" className="inline-flex items-center text-primary font-semibold hover:underline">

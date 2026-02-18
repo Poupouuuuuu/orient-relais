@@ -1,10 +1,12 @@
-import Link from "next/link";
-import { ChevronDown } from "lucide-react";
+"use client";
 
-export const metadata = {
-    title: "FAQ | Questions Fréquentes",
-    description: "Retrouvez les réponses à toutes vos questions sur les produits Orient Relais, la livraison, le paiement et les retours.",
-};
+import Link from "next/link";
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const FAQ_SECTIONS = [
     {
@@ -103,34 +105,34 @@ export default function FAQPage() {
                         <h2 className="font-serif text-2xl font-bold text-stone-900 mb-6 pb-2 border-b border-stone-200">
                             {section.title}
                         </h2>
-                        <div className="space-y-4">
+                        <Accordion type="single" collapsible className="space-y-3">
                             {section.questions.map((item, index) => (
-                                <details
+                                <AccordionItem
                                     key={index}
-                                    className="group bg-white border border-stone-200 rounded-xl overflow-hidden"
+                                    value={`${sectionIndex}-${index}`}
+                                    className="bg-white border border-stone-200 rounded-xl overflow-hidden hover:border-primary/30 hover:shadow-md hover:shadow-primary/5 transition-all duration-300 px-5"
                                 >
-                                    <summary className="flex items-center justify-between p-5 cursor-pointer hover:bg-stone-50 transition-colors">
-                                        <span className="font-medium text-stone-900 pr-4">{item.q}</span>
-                                        <ChevronDown className="h-5 w-5 text-stone-400 transition-transform group-open:rotate-180 flex-shrink-0" />
-                                    </summary>
-                                    <div className="px-5 pb-5 pt-0">
+                                    <AccordionTrigger className="text-stone-900 font-medium text-left hover:no-underline hover:text-primary transition-colors py-5">
+                                        {item.q}
+                                    </AccordionTrigger>
+                                    <AccordionContent>
                                         <p className="text-stone-600 leading-relaxed border-l-2 border-primary pl-4">
                                             {item.a}
                                         </p>
-                                    </div>
-                                </details>
+                                    </AccordionContent>
+                                </AccordionItem>
                             ))}
-                        </div>
+                        </Accordion>
                     </section>
                 ))}
             </div>
 
             {/* Contact CTA */}
-            <div className="max-w-3xl mx-auto mt-16 bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl p-8 text-center border border-orange-100">
+            <div className="max-w-3xl mx-auto mt-16 bg-gradient-to-r from-amber-50/70 to-stone-50 rounded-2xl p-8 text-center border border-primary/10">
                 <h3 className="font-serif text-xl font-bold text-stone-900 mb-2">Vous avez une autre question ?</h3>
                 <p className="text-stone-600 mb-4">Notre équipe est disponible pour vous aider.</p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                    <Link href="/contact" className="inline-flex items-center justify-center px-6 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-orange-600 transition-colors">
+                    <Link href="/contact" className="inline-flex items-center justify-center px-6 py-3 bg-primary text-primary-foreground rounded-lg font-semibold hover:bg-primary/90 transition-colors">
                         Nous contacter
                     </Link>
                     <a href="tel:0699556977" className="inline-flex items-center justify-center px-6 py-3 bg-white border border-stone-200 rounded-lg font-semibold text-stone-900 hover:bg-stone-50 transition-colors">

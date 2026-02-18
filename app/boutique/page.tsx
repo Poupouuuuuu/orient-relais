@@ -1,9 +1,6 @@
-import { ProductCard } from "@/components/shop/ProductCard";
-import { ProductFilters } from "@/components/shop/ProductFilters";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
-import { SlidersHorizontal } from "lucide-react";
+import { CategoryProductGrid } from "@/components/shop/CategoryProductGrid";
 import { ALL_PRODUCTS } from "@/data/products";
+import { Sparkles, ShoppingBag } from "lucide-react";
 
 export const metadata = {
     title: "Boutique | Orient Relais - Produits Bio",
@@ -11,76 +8,47 @@ export const metadata = {
 };
 
 export default function BoutiquePage() {
-    const products = ALL_PRODUCTS.map(p => ({
-        id: p.id,
-        title: p.title,
-        price: p.price,
-        image: p.image,
-        rating: p.rating,
-        reviews: p.reviews,
-        badges: p.badges,
-        slug: p.slug,
-    }));
+    // Filter out products with price 0 or placeholder category
+    const products = ALL_PRODUCTS.filter(p => p.price > 0 && p.category !== "tous");
 
     return (
         <div className="container mx-auto px-4 py-8">
-            <div className="flex flex-col md:flex-row gap-8">
+            {/* Header */}
+            <div className="mb-10">
+                <span className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-primary bg-primary/5 px-4 py-1.5 rounded-full border border-primary/10 mb-3">
+                    <ShoppingBag className="h-4 w-4" /> Tous nos produits
+                </span>
+                <h1 className="font-serif text-4xl font-bold text-stone-900">Notre Boutique</h1>
+            </div>
 
-                {/* Desktop Sidebar (Filters) */}
-                <aside className="hidden lg:block w-64 flex-shrink-0 sticky top-24 h-fit">
-                    <ProductFilters />
-                </aside>
+            {/* Product Grid with Filters */}
+            <CategoryProductGrid
+                category="all"
+                products={products}
+                productCount={products.length}
+            />
 
-                {/* Mobile Filters Drawer */}
-                <div className="lg:hidden mb-6 flex justify-between items-center">
-                    <h1 className="font-serif text-3xl font-bold text-stone-900">Notre Boutique</h1>
-                    <Sheet>
-                        <SheetTrigger asChild>
-                            <Button variant="outline" className="flex items-center gap-2">
-                                <SlidersHorizontal className="h-4 w-4" />
-                                Filtres
-                            </Button>
-                        </SheetTrigger>
-                        <SheetContent side="left" className="w-[300px] sm:w-[400px] overflow-y-auto">
-                            <div className="py-6">
-                                <ProductFilters />
-                            </div>
-                        </SheetContent>
-                    </Sheet>
-                </div>
-
-                {/* Product Grid */}
-                <div className="flex-1">
-                    <div className="hidden lg:flex items-center justify-between mb-8">
-                        <h1 className="font-serif text-3xl font-bold text-stone-900">Notre Boutique</h1>
-                        <span className="text-stone-500 text-sm">{products.length} produits trouvés</span>
-                    </div>
-
-                    <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-4 gap-y-8">
-                        {products.map((product) => (
-                            <ProductCard key={product.id} product={product} />
-                        ))}
-                    </div>
-
-                    {/* SEO Block */}
-                    <div className="mt-24 border-t border-stone-200 pt-12">
-                        <div className="max-w-3xl mx-auto text-center space-y-4">
-                            <h2 className="font-serif text-2xl font-bold text-stone-900">
-                                Orient Relais - Votre Boutique Bio en Ligne
-                            </h2>
-                            <div className="text-stone-600 text-sm leading-relaxed space-y-4 text-justify md:text-center">
-                                <p>
-                                    Basé dans les Yvelines (78), Orient Relais vous propose une gamme de produits bio pour votre bien-être.
-                                    Savons d'Alep authentiques fabriqués selon la méthode traditionnelle ancestrale,
-                                    huiles essentielles 100% pures Terra Etica, compléments alimentaires naturels et coffrets cadeaux soigneusement composés.
-                                </p>
-                                <p>
-                                    Tous nos produits sont sélectionnés avec soin auprès de marques de confiance comme DP Nature et Najel.
-                                    Certifiés bio, sans ingrédients chimiques, respectueux des animaux et de l'environnement.
-                                    Livraison offerte dès 39€ en France métropolitaine avec Mondial Relay.
-                                </p>
-                            </div>
-                        </div>
+            {/* SEO Block */}
+            <div className="relative mt-24 pt-12 overflow-hidden">
+                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
+                <div className="max-w-3xl mx-auto text-center space-y-4 relative">
+                    <span className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-primary">
+                        <Sparkles className="h-4 w-4" /> À propos
+                    </span>
+                    <h2 className="font-serif text-2xl font-bold text-stone-900">
+                        Orient Relais - Votre Boutique Bio en Ligne
+                    </h2>
+                    <div className="text-stone-600 text-sm leading-relaxed space-y-4 text-justify md:text-center">
+                        <p>
+                            Basé dans les Yvelines (78), Orient Relais vous propose une gamme de produits bio pour votre bien-être.
+                            Savons d'Alep authentiques fabriqués selon la méthode traditionnelle ancestrale,
+                            huiles essentielles 100% pures Terra Etica, compléments alimentaires naturels et coffrets cadeaux soigneusement composés.
+                        </p>
+                        <p>
+                            Tous nos produits sont sélectionnés avec soin auprès de marques de confiance comme DP Nature et Najel.
+                            Certifiés bio, sans ingrédients chimiques, respectueux des animaux et de l'environnement.
+                            <span className="text-primary font-medium"> Livraison offerte dès 39€</span> en France métropolitaine avec Mondial Relay.
+                        </p>
                     </div>
                 </div>
             </div>

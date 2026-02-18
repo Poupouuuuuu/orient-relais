@@ -22,7 +22,7 @@ export default function BlogPage() {
 
             {/* Featured Article */}
             <div className="mb-16">
-                <Link href={`/blog/${ARTICLES[0].slug}`} className="group block bg-white rounded-3xl overflow-hidden border border-stone-100 shadow-sm hover:shadow-lg transition-all">
+                <Link href={`/blog/${ARTICLES[0].slug}`} className="group block bg-white rounded-3xl overflow-hidden border border-stone-100 shadow-sm hover:shadow-xl hover:shadow-primary/10 hover:border-primary/20 transition-all duration-500">
                     <div className="grid md:grid-cols-2 gap-0">
                         <div className="relative aspect-[16/10] md:aspect-auto overflow-hidden bg-stone-100">
                             <Image
@@ -104,7 +104,7 @@ export default function BlogPage() {
             </div>
 
             {/* Newsletter CTA */}
-            <div className="mt-20 bg-gradient-to-r from-orange-50 to-amber-50 rounded-3xl p-8 md:p-12 text-center border border-orange-100">
+            <div className="mt-20 bg-gradient-to-r from-amber-50/70 to-stone-50 rounded-3xl p-8 md:p-12 text-center border border-primary/10">
                 <h3 className="font-serif text-2xl font-bold text-stone-900 mb-3">Restez informé(e)</h3>
                 <p className="text-stone-600 mb-6 max-w-md mx-auto">
                     Recevez nos conseils bien-être et nos offres exclusives directement dans votre boîte mail.
@@ -115,7 +115,7 @@ export default function BlogPage() {
                         placeholder="Votre email"
                         className="flex-1 px-4 py-3 rounded-lg border border-stone-200 focus:outline-none focus:ring-2 focus:ring-primary"
                     />
-                    <button className="bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors">
+                    <button className="bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors">
                         S'inscrire
                     </button>
                 </div>

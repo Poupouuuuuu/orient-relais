@@ -1,12 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { Search, ShoppingBag, Menu, User, X, ChevronDown } from "lucide-react";
+import Image from "next/image";
+import { Search, ShoppingBag, Menu, User, X, ChevronDown, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect, useRef } from "react";
 import { CartDrawer } from "@/components/shop/CartDrawer";
 import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
 
 export function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -31,16 +33,16 @@ export function Header() {
 
     return (
         <div className="flex flex-col">
-            {/* Top Bar - More subtle */}
-            <div className="bg-secondary text-white py-2 text-center text-xs font-medium tracking-wider uppercase">
-                Livraison offerte dès 39€ en France
+            {/* Top Bar - Gold Accent */}
+            <div className="bg-gradient-to-r from-stone-900 via-stone-800 to-stone-900 text-white py-2.5 text-center text-xs font-medium tracking-wider uppercase border-b border-primary/20">
+                <span className="bg-gradient-to-r from-primary via-amber-400 to-primary bg-clip-text text-transparent font-bold">✨ Livraison offerte dès 39€ en France ✨</span>
             </div>
 
             <header
                 className={cn(
                     "sticky top-0 z-50 w-full border-b transition-all duration-300",
                     isScrolled
-                        ? "border-stone-200/50 bg-white/95 backdrop-blur-md shadow-sm"
+                        ? "border-primary/20 bg-white/95 backdrop-blur-md shadow-lg shadow-stone-900/5"
                         : "border-transparent bg-white/80 backdrop-blur-sm"
                 )}
                 onMouseLeave={() => setIsProductsMenuOpen(false)}
@@ -48,9 +50,14 @@ export function Header() {
                 <div className="container mx-auto flex h-20 items-center justify-between px-4 gap-8">
                     {/* Logo - Left */}
                     <Link href="/" className="flex-shrink-0 group relative z-50">
-                        <span className="font-serif text-2xl md:text-3xl font-bold text-stone-900 tracking-tight leading-none group-hover:text-primary transition-colors">
-                            Orient Relais
-                        </span>
+                        <Image
+                            src="/images/logo-new.png"
+                            alt="Orient Relais"
+                            width={150}
+                            height={50}
+                            className="h-10 w-auto md:h-12 lg:h-14 object-contain"
+                            priority
+                        />
                     </Link>
 
                     {/* Desktop Nav - Centered */}
@@ -67,9 +74,18 @@ export function Header() {
                             </button>
                         </div>
 
-                        <Link href="/a-propos" className="hover:text-primary transition-colors">Notre Histoire</Link>
-                        <Link href="/blog" className="hover:text-primary transition-colors">Le Journal</Link>
-                        <Link href="/contact" className="hover:text-primary transition-colors">Contact</Link>
+                        <Link href="/a-propos" className="relative hover:text-primary transition-colors group">
+                            Notre Histoire
+                            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full" />
+                        </Link>
+                        <Link href="/blog" className="relative hover:text-primary transition-colors group">
+                            Le Journal
+                            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full" />
+                        </Link>
+                        <Link href="/contact" className="relative hover:text-primary transition-colors group">
+                            Contact
+                            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full" />
+                        </Link>
                     </nav>
 
                     {/* Actions - Right */}
@@ -104,25 +120,40 @@ export function Header() {
 
                 {/* Mega Menu Dropdown */}
                 <div className={cn(
-                    "absolute top-full left-0 w-full bg-white border-t border-stone-100 shadow-lg overflow-hidden transition-all duration-300 ease-in-out origin-top z-40",
-                    isProductsMenuOpen ? "opacity-100 max-h-96" : "opacity-0 max-h-0"
+                    "absolute top-full left-0 w-full bg-white border-t border-primary/10 shadow-2xl shadow-stone-900/10 overflow-hidden transition-all duration-300 ease-in-out origin-top z-40",
+                    isProductsMenuOpen ? "opacity-100 max-h-96" : "opacity-0 max-h-0 pointer-events-none"
                 )}
                     onMouseEnter={() => setIsProductsMenuOpen(true)}
                     onMouseLeave={() => setIsProductsMenuOpen(false)}
                 >
-                    <div className="container mx-auto px-4 py-8">
-                        <div className="grid grid-cols-4 gap-8">
-                            {productCategories.map((cat) => (
+                    {/* Gold accent line */}
+                    <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-primary to-transparent" />
+                    <div className="container mx-auto px-4 py-10">
+                        {/* All Products Link */}
+                        <Link
+                            href="/boutique"
+                            className="inline-flex items-center gap-2 mb-8 px-5 py-3 rounded-full bg-gradient-to-r from-primary to-amber-500 text-white font-bold hover:shadow-lg hover:shadow-primary/30 hover:scale-105 transition-all duration-300"
+                            onClick={() => setIsProductsMenuOpen(false)}
+                        >
+                            <ShoppingBag className="h-5 w-5" />
+                            Voir tous les produits
+                        </Link>
+
+                        <div className="grid grid-cols-5 gap-6">
+                            {productCategories.map((cat, i) => (
                                 <Link
                                     key={cat.href}
                                     href={cat.href}
-                                    className="group block p-4 rounded-xl hover:bg-stone-50 transition-colors"
+                                    className="group block p-5 rounded-2xl hover:bg-gradient-to-br hover:from-amber-50/50 hover:to-stone-50 border border-transparent hover:border-primary/20 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300"
                                     onClick={() => setIsProductsMenuOpen(false)}
                                 >
-                                    <h3 className="font-serif text-lg font-bold text-stone-900 group-hover:text-primary mb-1">
+                                    <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center text-primary mb-3 group-hover:scale-110 group-hover:shadow-md group-hover:shadow-primary/20 transition-all duration-300 border border-primary/10">
+                                        <Sparkles className="h-5 w-5" />
+                                    </div>
+                                    <h3 className="font-serif text-lg font-bold text-stone-900 group-hover:text-primary mb-1 transition-colors">
                                         {cat.label}
                                     </h3>
-                                    <p className="text-sm text-stone-500">{cat.desc}</p>
+                                    <p className="text-sm text-stone-500 group-hover:text-stone-600 transition-colors">{cat.desc}</p>
                                 </Link>
                             ))}
                         </div>
@@ -130,50 +161,81 @@ export function Header() {
                 </div>
 
                 {/* Mobile Menu */}
-                {isMenuOpen && (
-                    <div className="lg:hidden border-t border-stone-100 bg-white h-[calc(100vh-80px)] overflow-y-auto">
-                        <div className="p-4 space-y-6">
-                            <div className="relative">
-                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" />
-                                <Input
-                                    type="search"
-                                    placeholder="Rechercher..."
-                                    className="pl-10 bg-stone-50"
-                                    onKeyDown={(e) => {
-                                        if (e.key === 'Enter') {
-                                            window.location.href = `/recherche?q=${(e.target as HTMLInputElement).value}`;
-                                        }
-                                    }}
-                                />
-                            </div>
+                <AnimatePresence>
+                    {isMenuOpen && (
+                        <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "calc(100vh - 80px)", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.3, ease: "easeInOut" }}
+                            className="lg:hidden border-t border-stone-100 bg-white overflow-hidden"
+                        >
+                            <div className="p-4 space-y-6 overflow-y-auto h-full pb-20">
+                                <div className="relative">
+                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" />
+                                    <Input
+                                        type="search"
+                                        placeholder="Rechercher..."
+                                        className="pl-10 bg-stone-50"
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter') {
+                                                window.location.href = `/recherche?q=${(e.target as HTMLInputElement).value}`;
+                                            }
+                                        }}
+                                    />
+                                </div>
 
-                            <div>
-                                <h3 className="text-sm font-bold text-stone-400 uppercase tracking-wider mb-3 px-2">Boutique</h3>
-                                <nav className="flex flex-col space-y-1">
-                                    {productCategories.map((link) => (
-                                        <Link
-                                            key={link.href}
-                                            href={link.href}
-                                            className="px-4 py-3 rounded-lg hover:bg-stone-50 text-stone-900 font-medium"
-                                            onClick={() => setIsMenuOpen(false)}
-                                        >
-                                            {link.label}
-                                        </Link>
-                                    ))}
-                                </nav>
-                            </div>
+                                <div>
+                                    <h3 className="text-sm font-bold text-stone-400 uppercase tracking-wider mb-3 px-2">Boutique</h3>
+                                    <nav className="flex flex-col space-y-1">
+                                        {productCategories.map((link, i) => (
+                                            <motion.div
+                                                key={link.href}
+                                                initial={{ opacity: 0, x: -10 }}
+                                                animate={{ opacity: 1, x: 0 }}
+                                                transition={{ delay: 0.1 + (i * 0.05) }}
+                                            >
+                                                <Link
+                                                    href={link.href}
+                                                    className="block px-4 py-3 rounded-lg hover:bg-stone-50 text-stone-900 font-medium"
+                                                    onClick={() => setIsMenuOpen(false)}
+                                                >
+                                                    {link.label}
+                                                </Link>
+                                            </motion.div>
+                                        ))}
+                                    </nav>
+                                </div>
 
-                            <div className="border-t border-stone-100 pt-6">
-                                <nav className="flex flex-col space-y-1">
-                                    <Link href="/a-propos" className="px-4 py-3 rounded-lg hover:bg-stone-50 text-stone-600" onClick={() => setIsMenuOpen(false)}>Notre Histoire</Link>
-                                    <Link href="/blog" className="px-4 py-3 rounded-lg hover:bg-stone-50 text-stone-600" onClick={() => setIsMenuOpen(false)}>Le Journal</Link>
-                                    <Link href="/contact" className="px-4 py-3 rounded-lg hover:bg-stone-50 text-stone-600" onClick={() => setIsMenuOpen(false)}>Contact</Link>
-                                    <Link href="/faq" className="px-4 py-3 rounded-lg hover:bg-stone-50 text-stone-600" onClick={() => setIsMenuOpen(false)}>FAQ</Link>
-                                </nav>
+                                <div className="border-t border-stone-100 pt-6">
+                                    <nav className="flex flex-col space-y-1">
+                                        {[
+                                            { href: "/a-propos", label: "Notre Histoire" },
+                                            { href: "/blog", label: "Le Journal" },
+                                            { href: "/contact", label: "Contact" },
+                                            { href: "/faq", label: "FAQ" }
+                                        ].map((link, i) => (
+                                            <motion.div
+                                                key={link.href}
+                                                initial={{ opacity: 0, x: -10 }}
+                                                animate={{ opacity: 1, x: 0 }}
+                                                transition={{ delay: 0.3 + (i * 0.05) }}
+                                            >
+                                                <Link
+                                                    href={link.href}
+                                                    className="block px-4 py-3 rounded-lg hover:bg-stone-50 text-stone-600"
+                                                    onClick={() => setIsMenuOpen(false)}
+                                                >
+                                                    {link.label}
+                                                </Link>
+                                            </motion.div>
+                                        ))}
+                                    </nav>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                )}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </header>
         </div>
     );

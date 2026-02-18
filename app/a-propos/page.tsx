@@ -12,18 +12,20 @@ export default function AboutPage() {
     return (
         <div className="pb-16">
             {/* Hero */}
-            <div className="relative h-[60vh] w-full flex items-center justify-center bg-stone-900 text-white">
+            <div className="relative h-[60vh] w-full flex items-center justify-center bg-stone-900 text-white overflow-hidden">
                 <Image
                     src="/hero.png"
                     alt="Savon d'Alep artisanal"
                     fill
-                    className="object-cover opacity-60"
+                    className="object-cover opacity-50 scale-105"
                 />
+                {/* Animated Gold Glow */}
+                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-gradient-radial from-primary/20 via-primary/5 to-transparent blur-3xl pointer-events-none animate-pulse" style={{ animationDuration: '4s' }} />
                 <div className="relative z-10 text-center px-4 max-w-4xl">
-                    <span className="inline-block rounded-full bg-primary/90 px-4 py-1.5 text-sm font-medium text-white mb-6">
+                    <span className="inline-block rounded-full bg-primary/90 px-4 py-1.5 text-sm font-medium text-white mb-6 shadow-lg shadow-primary/30">
                         Depuis les Yvelines, pour votre bien-être
                     </span>
-                    <h1 className="font-serif text-5xl md:text-7xl font-bold mb-6">Qui sommes-nous ?</h1>
+                    <h1 className="font-serif text-5xl md:text-7xl font-bold mb-6 drop-shadow-lg">Qui sommes-nous ?</h1>
                     <p className="text-xl md:text-2xl font-light text-stone-200">
                         Revendeur spécialisé des produits DP Nature et Najel
                     </p>
@@ -68,7 +70,7 @@ export default function AboutPage() {
                 </div>
 
                 {/* Engagements */}
-                <div className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-3xl p-8 md:p-12">
+                <div className="bg-gradient-to-br from-amber-50/70 to-stone-50 rounded-3xl p-8 md:p-12">
                     <div className="text-center mb-12">
                         <span className="text-primary font-bold uppercase tracking-widest text-sm">Nos Engagements</span>
                         <h2 className="font-serif text-3xl font-bold text-stone-900 mt-2">Des produits sains et naturels</h2>
@@ -113,7 +115,7 @@ export default function AboutPage() {
                             <li className="flex items-center gap-2"><span className="text-primary">✓</span> Hydrate et nourrit</li>
                         </ul>
                         <Link href="/categorie/savons">
-                            <Button className="bg-primary text-white hover:bg-orange-600 h-12 px-8 mt-4">
+                            <Button className="h-12 px-8 mt-4">
                                 Découvrir nos savons
                             </Button>
                         </Link>
@@ -125,55 +127,68 @@ export default function AboutPage() {
 
                 {/* Huiles et Compléments */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div className="bg-stone-50 p-8 rounded-2xl space-y-4">
+                    <div className="relative bg-gradient-to-br from-amber-50/50 to-stone-50 p-8 rounded-3xl space-y-4 border border-primary/10 overflow-hidden group hover:shadow-xl hover:shadow-primary/10 transition-all duration-500">
+                        {/* Corner accent */}
+                        <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-primary/10 to-transparent rounded-bl-full" />
                         <h3 className="font-serif text-2xl font-bold text-stone-900">Huiles essentielles 100% pures</h3>
                         <p className="text-stone-600 leading-relaxed">
                             Explorez notre sélection d'huiles essentielles naturelles et biologiques, extraites avec soin
-                            pour préserver toutes leurs propriétés thérapeutiques. Véritables concentrés de nature,
-                            elles sont idéales pour accompagner vos rituels de soin, de relaxation ou de santé au quotidien.
+                            pour préserver toutes leurs propriétés thérapeutiques.
                         </p>
-                        <Link href="/categorie/huiles-essentielles" className="text-primary font-medium hover:underline inline-flex items-center gap-1">
-                            Voir les huiles essentielles →
+                        <Link href="/categorie/huiles-essentielles" className="text-primary font-bold hover:text-amber-600 inline-flex items-center gap-2 transition-colors group-hover:gap-3">
+                            Voir les huiles essentielles <span className="transition-transform group-hover:translate-x-1">→</span>
                         </Link>
                     </div>
-                    <div className="bg-stone-50 p-8 rounded-2xl space-y-4">
-                        <h3 className="font-serif text-2xl font-bold text-stone-900">Compléments alimentaires naturels</h3>
-                        <p className="text-stone-600 leading-relaxed">
-                            Découvrez notre sélection de compléments alimentaires naturels pour renforcer votre bien-être
-                            physique et mental. Spiruline, gelée royale, nigelle, vitamines, probiotiques...
-                            Chaque produit est sélectionné avec soin pour vous accompagner de manière saine et durable.
+                    <div className="relative bg-gradient-to-br from-stone-900 to-stone-800 p-8 rounded-3xl space-y-4 overflow-hidden group hover:shadow-xl hover:shadow-primary/20 transition-all duration-500">
+                        {/* Gold glow */}
+                        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-40 h-20 bg-primary/30 blur-3xl opacity-50 group-hover:opacity-100 transition-opacity" />
+                        <h3 className="font-serif text-2xl font-bold text-white">Compléments alimentaires naturels</h3>
+                        <p className="text-stone-300 leading-relaxed">
+                            Découvrez notre sélection pour renforcer votre bien-être. Spiruline, gelée royale, nigelle,
+                            vitamines... Chaque produit est sélectionné avec soin.
                         </p>
-                        <Link href="/categorie/complements-alimentaires" className="text-primary font-medium hover:underline inline-flex items-center gap-1">
-                            Voir les compléments →
+                        <Link href="/categorie/complements-alimentaires" className="text-primary font-bold hover:text-amber-300 inline-flex items-center gap-2 transition-colors group-hover:gap-3">
+                            Voir les compléments <span className="transition-transform group-hover:translate-x-1">→</span>
                         </Link>
                     </div>
                 </div>
 
                 {/* Contact Info */}
-                <div className="bg-stone-900 text-white p-8 md:p-12 rounded-3xl text-center">
-                    <h2 className="font-serif text-3xl font-bold mb-4">Nous contacter</h2>
-                    <p className="text-stone-300 mb-6 max-w-xl mx-auto">
-                        Une question sur nos produits ? Notre équipe est à votre écoute.
-                    </p>
-                    <div className="flex flex-col md:flex-row justify-center gap-8 text-stone-200">
-                        <div>
-                            <span className="block text-sm text-stone-400 mb-1">Adresse</span>
-                            <span className="font-medium">48 avenue de Touraine<br />78310 MAUREPAS</span>
+                <div className="relative bg-stone-900 text-white p-8 md:p-12 rounded-3xl text-center overflow-hidden">
+                    {/* Pattern overlay */}
+                    <div className="absolute inset-0 opacity-5" style={{
+                        backgroundImage: `radial-gradient(circle at 1px 1px, #fff 1px, transparent 0)`,
+                        backgroundSize: '20px 20px',
+                    }} />
+                    {/* Gold glow */}
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-60 h-30 bg-primary/20 blur-3xl" />
+                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-primary to-transparent" />
+
+                    <div className="relative z-10">
+                        <h2 className="font-serif text-3xl font-bold mb-4">Nous contacter</h2>
+                        <p className="text-stone-300 mb-8 max-w-xl mx-auto">
+                            Une question sur nos produits ? Notre équipe est à votre écoute.
+                        </p>
+                        <div className="flex flex-col md:flex-row justify-center gap-8 text-stone-200 mb-8">
+                            <div className="bg-stone-800/50 p-4 rounded-xl border border-stone-700">
+                                <span className="block text-xs text-primary mb-1 uppercase tracking-wider font-bold">Adresse</span>
+                                <span className="font-medium">48 avenue de Touraine<br />78310 MAUREPAS</span>
+                            </div>
+                            <div className="bg-stone-800/50 p-4 rounded-xl border border-stone-700">
+                                <span className="block text-xs text-primary mb-1 uppercase tracking-wider font-bold">Téléphone</span>
+                                <span className="font-medium">06 99 55 69 77</span>
+                            </div>
+                            <div className="bg-stone-800/50 p-4 rounded-xl border border-stone-700">
+                                <span className="block text-xs text-primary mb-1 uppercase tracking-wider font-bold">Email</span>
+                                <span className="font-medium">Contact@orient-relais.com</span>
+                            </div>
                         </div>
-                        <div>
-                            <span className="block text-sm text-stone-400 mb-1">Téléphone</span>
-                            <span className="font-medium">06 99 55 69 77</span>
-                        </div>
-                        <div>
-                            <span className="block text-sm text-stone-400 mb-1">Email</span>
-                            <span className="font-medium">Contact@orient-relais.com</span>
-                        </div>
+                        <Link href="/contact">
+                            <Button className="bg-primary hover:bg-primary/90 text-white h-12 px-8 shadow-lg shadow-primary/30">
+                                Nous écrire
+                            </Button>
+                        </Link>
                     </div>
-                    <Link href="/contact">
-                        <Button variant="outline" className="mt-8 border-white text-white hover:bg-white hover:text-stone-900">
-                            Nous écrire
-                        </Button>
-                    </Link>
                 </div>
             </div>
         </div>
@@ -182,8 +197,8 @@ export default function AboutPage() {
 
 function ValueCard({ icon: Icon, title, text }: { icon: React.ElementType, title: string, text: string }) {
     return (
-        <div className="bg-white p-8 rounded-xl border border-stone-100 shadow-sm hover:shadow-md transition-shadow text-center flex flex-col items-center">
-            <div className="h-16 w-16 bg-orange-100 rounded-full flex items-center justify-center text-primary mb-6">
+        <div className="group bg-white p-8 rounded-2xl border border-stone-100 shadow-sm hover:shadow-xl hover:shadow-primary/10 hover:border-primary/20 transition-all duration-500 text-center flex flex-col items-center">
+            <div className="h-16 w-16 bg-gradient-to-br from-primary/15 to-primary/5 rounded-2xl flex items-center justify-center text-primary mb-6 group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-primary/20 transition-all duration-300 border border-primary/10">
                 <Icon className="h-8 w-8" />
             </div>
             <h3 className="font-serif text-xl font-bold text-stone-900 mb-3">{title}</h3>

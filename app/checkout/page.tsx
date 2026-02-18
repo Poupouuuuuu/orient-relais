@@ -62,14 +62,14 @@ export default function CheckoutPage() {
                     {/* Left Column: Form Steps */}
                     <div className="flex-1 space-y-8">
                         {/* Breadcrumb / Steps Visual */}
-                        <div className="flex items-center text-sm font-medium text-stone-500 mb-8">
-                            <span className={step >= 1 ? "text-primary" : ""}>Panier</span>
+                        <div className="flex items-center justify-center sm:justify-start text-sm font-medium text-stone-400 mb-8 bg-stone-100 rounded-full px-4 py-2 w-fit">
+                            <span className={`transition-colors ${step >= 1 ? "text-primary font-bold" : ""}`}>Panier</span>
                             <ChevronRight className="h-4 w-4 mx-2" />
-                            <span className={step >= 2 ? "text-primary" : ""}>Information</span>
+                            <span className={`transition-colors ${step >= 2 ? "text-primary font-bold" : ""}`}>Information</span>
                             <ChevronRight className="h-4 w-4 mx-2" />
-                            <span className={step >= 3 ? "text-primary" : ""}>Livraison</span>
+                            <span className={`transition-colors ${step >= 3 ? "text-primary font-bold" : ""}`}>Livraison</span>
                             <ChevronRight className="h-4 w-4 mx-2" />
-                            <span className={step >= 4 ? "text-primary" : ""}>Paiement</span>
+                            <span className={`transition-colors ${step >= 4 ? "text-primary font-bold" : ""}`}>Paiement</span>
                         </div>
 
                         {/* Step 1 & 2: Information & Shipping */}
@@ -130,7 +130,7 @@ export default function CheckoutPage() {
                                 </section>
 
                                 <div className="flex justify-end">
-                                    <Button type="submit" size="lg" className="w-full md:w-auto bg-primary text-white hover:bg-orange-600 font-bold">
+                                    <Button type="submit" size="lg" className="w-full md:w-auto font-bold">
                                         Vers la livraison <ChevronRight className="ml-2 h-4 w-4" />
                                     </Button>
                                 </div>
@@ -159,7 +159,7 @@ export default function CheckoutPage() {
 
                                 <div className="flex justify-between">
                                     <Button variant="outline" onClick={() => setStep(2)}>Retour</Button>
-                                    <Button onClick={() => setStep(4)} size="lg" className="bg-primary text-white hover:bg-orange-600 font-bold">
+                                    <Button onClick={() => setStep(4)} size="lg" className="font-bold">
                                         Vers le paiement <ChevronRight className="ml-2 h-4 w-4" />
                                     </Button>
                                 </div>
@@ -188,7 +188,7 @@ export default function CheckoutPage() {
                                         onClick={handlePayment}
                                         disabled={isLoading}
                                         size="lg"
-                                        className="bg-primary text-white hover:bg-orange-600 font-bold w-full md:w-auto min-w-[200px]"
+                                        className="font-bold w-full md:w-auto min-w-[200px]"
                                     >
                                         {isLoading ? "Traitement..." : `Payer ${(subtotal + 4.90).toFixed(2)} €`}
                                     </Button>
@@ -199,14 +199,17 @@ export default function CheckoutPage() {
 
                     {/* Right Column: Order Summary (Sticky) */}
                     <div className="w-full lg:w-[380px] flex-shrink-0">
-                        <div className="sticky top-24 bg-white p-6 rounded-xl border border-stone-200 shadow-xl shadow-stone-200/50">
+                        <div className="sticky top-24 bg-white p-6 rounded-2xl border border-stone-200 shadow-xl shadow-stone-200/50 relative overflow-hidden">
+                            {/* Top accent line */}
+                            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-amber-400 to-primary" />
+
                             <h3 className="font-serif text-lg font-bold text-stone-900 mb-4">Récapitulatif</h3>
                             <div className="space-y-4 mb-6">
                                 {items.map((item) => (
                                     <div key={`${item.id}-${item.variant}`} className="flex gap-3">
-                                        <div className="relative h-12 w-12 rounded bg-stone-100 flex-shrink-0 overflow-hidden">
+                                        <div className="relative h-12 w-12 rounded-lg bg-stone-100 flex-shrink-0 overflow-hidden border border-stone-200">
                                             <Image src={item.image} alt={item.title} fill className="object-cover" />
-                                            <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-stone-500 text-white text-[10px] flex items-center justify-center font-bold border-2 border-white">
+                                            <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-white text-[10px] flex items-center justify-center font-bold border-2 border-white">
                                                 {item.quantity}
                                             </span>
                                         </div>
@@ -214,7 +217,7 @@ export default function CheckoutPage() {
                                             <p className="text-sm font-medium text-stone-900 truncate">{item.title}</p>
                                             <p className="text-xs text-stone-500">{item.variant}</p>
                                         </div>
-                                        <div className="text-sm font-medium text-stone-700">
+                                        <div className="text-sm font-bold text-stone-700">
                                             {(item.price * item.quantity).toFixed(2)}€
                                         </div>
                                     </div>
@@ -244,8 +247,8 @@ export default function CheckoutPage() {
                                 </div>
                             </div>
 
-                            <div className="mt-6 bg-stone-50 p-3 rounded text-xs text-stone-500 flex gap-2">
-                                <Lock className="h-4 w-4 flex-shrink-0" />
+                            <div className="mt-6 bg-gradient-to-r from-primary/5 to-amber-50 p-3 rounded-xl text-xs text-stone-600 flex gap-2 border border-primary/10">
+                                <Lock className="h-4 w-4 flex-shrink-0 text-primary" />
                                 <p>Transactions sécurisées et cryptées SSL. Vos données sont protégées.</p>
                             </div>
                         </div>

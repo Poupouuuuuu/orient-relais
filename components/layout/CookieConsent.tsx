@@ -40,22 +40,22 @@ export function CookieConsent() {
                 <div className="flex-1 text-center md:text-left">
                     <h3 className="text-lg font-serif font-bold text-white mb-2">Respect de votre vie privée</h3>
                     <p className="text-sm text-stone-400 leading-relaxed max-w-2xl">
-                        Nous utilisons des cookies pour améliorer votre expérience, analyser le trafic et personnaliser le contenu. 
-                        En cliquant sur "Accepter", vous consentez à l'utilisation de tous les cookies. 
+                        Nous utilisons des cookies pour améliorer votre expérience, analyser le trafic et personnaliser le contenu.
+                        En cliquant sur "Accepter", vous consentez à l'utilisation de tous les cookies.
                         Vous pouvez refuser ou modifier vos préférences à tout moment.
                     </p>
                 </div>
                 <div className="flex gap-3 shrink-0">
-                    <Button 
-                        variant="outline" 
+                    <Button
+                        variant="outline"
                         onClick={handleDecline}
                         className="bg-transparent text-white border-stone-600 hover:bg-stone-800 hover:text-white"
                     >
                         Refuser
                     </Button>
-                    <Button 
+                    <Button
                         onClick={handleAccept}
-                        className="bg-primary hover:bg-orange-600 text-white font-medium"
+                        className="font-medium"
                     >
                         Accepter
                     </Button>

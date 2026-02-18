@@ -1,65 +1,92 @@
 import Link from "next/link";
-import { Phone, Mail, MapPin, Instagram } from "lucide-react";
+import Image from "next/image";
+import { Phone, Mail, MapPin, Instagram, ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 export function Footer() {
     return (
-        <footer className="bg-[#1c1917] text-stone-100 pt-16 pb-8 border-t-4 border-primary/20">
-            <div className="container mx-auto px-4">
+        <footer className="bg-stone-900 text-stone-100 relative overflow-hidden">
+            {/* No border - merges with reassurance section above */}
+
+            {/* Oriental pattern overlay */}
+            <div className="absolute inset-0 opacity-[0.03]" style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M50 50c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10c0 5.523-4.477 10-10 10s-10-4.477-10-10 4.477-10 10-10zM10 10c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10c0 5.523-4.477 10-10 10S0 25.523 0 20s4.477-10 10-10zm10 8c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8zm40 40c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8z' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+            }} />
+
+            <div className="container mx-auto px-4 pt-16 pb-8 relative z-10">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
                     {/* Brand */}
                     <div className="space-y-6">
                         <div>
-                            <h3 className="font-serif text-2xl font-bold text-white mb-2">Orient Relais</h3>
+                            <Link href="/">
+                                <Image
+                                    src="/images/logo-new.png"
+                                    alt="Orient Relais"
+                                    width={140}
+                                    height={50}
+                                    className="h-12 w-auto mb-4 object-contain brightness-0 invert opacity-90"
+                                />
+                            </Link>
                             <p className="text-sm text-stone-400 leading-relaxed">
-                                48 avenue de Touraine<br />
-                                78310 MAUREPAS<br />
-                                Tél : 06 99 55 69 77<br />
-                                Email : contact@orient-relais.com
+                                Votre boutique de produits naturels et bio depuis les Yvelines. Savons d'Alep, huiles essentielles et compléments alimentaires de qualité.
                             </p>
                         </div>
-                        <div className="flex gap-4">
-                            <a href="#" className="h-10 w-10 rounded-full bg-stone-800 flex items-center justify-center hover:bg-primary transition-colors group">
-                                <Instagram className="h-5 w-5 text-stone-300 group-hover:text-white" />
+                        {/* Social links — à remplir quand les comptes seront créés
+                        <div className="flex gap-3">
+                            <a href="#" className="h-11 w-11 rounded-xl bg-stone-800/80 border border-stone-700 flex items-center justify-center hover:bg-primary hover:border-primary hover:shadow-lg hover:shadow-primary/20 transition-all duration-300 group">
+                                <Instagram className="h-5 w-5 text-stone-400 group-hover:text-white transition-colors" />
                             </a>
-                            <a href="#" className="h-10 w-10 rounded-full bg-stone-800 flex items-center justify-center hover:bg-primary transition-colors group">
-                                <span className="font-bold text-stone-300 group-hover:text-white flex items-center justify-center text-xs">Tk</span>
+                            <a href="#" className="h-11 w-11 rounded-xl bg-stone-800/80 border border-stone-700 flex items-center justify-center hover:bg-primary hover:border-primary hover:shadow-lg hover:shadow-primary/20 transition-all duration-300 group">
+                                <span className="font-bold text-stone-400 group-hover:text-white flex items-center justify-center text-xs transition-colors">Tk</span>
                             </a>
                         </div>
+                        */}
                     </div>
 
                     {/* Navigation */}
                     <div>
-                        <h4 className="font-serif text-lg font-semibold text-white mb-6">Navigation</h4>
+                        <h4 className="font-serif text-lg font-semibold text-white mb-6 flex items-center gap-2">
+                            <span className="w-6 h-px bg-primary/50" />
+                            Navigation
+                        </h4>
                         <ul className="space-y-3 text-sm text-stone-400">
-                            <li><Link href="/categorie/savons" className="hover:text-primary transition-colors">Savons d'Alep</Link></li>
-                            <li><Link href="/categorie/complements-alimentaires" className="hover:text-primary transition-colors">Compléments Bio</Link></li>
-                            <li><Link href="/categorie/huiles-essentielles" className="hover:text-primary transition-colors">Huiles Essentielles</Link></li>
-                            <li><Link href="/categorie/coffrets" className="hover:text-primary transition-colors">Coffrets Cadeaux</Link></li>
-                            <li><Link href="/blog" className="hover:text-primary transition-colors">Le Journal</Link></li>
-                            <li><Link href="/faq" className="hover:text-primary transition-colors">FAQ</Link></li>
-                            <li><Link href="/a-propos" className="hover:text-primary transition-colors">Notre Démarche</Link></li>
+                            <li><Link href="/categorie/savons" className="hover:text-primary hover:translate-x-1 inline-block transition-all">Savons d'Alep</Link></li>
+                            <li><Link href="/categorie/complements-alimentaires" className="hover:text-primary hover:translate-x-1 inline-block transition-all">Compléments Bio</Link></li>
+                            <li><Link href="/categorie/huiles-essentielles" className="hover:text-primary hover:translate-x-1 inline-block transition-all">Huiles Essentielles</Link></li>
+                            <li><Link href="/categorie/coffrets" className="hover:text-primary hover:translate-x-1 inline-block transition-all">Coffrets Cadeaux</Link></li>
+                            <li><Link href="/blog" className="hover:text-primary hover:translate-x-1 inline-block transition-all">Le Journal</Link></li>
+                            <li><Link href="/faq" className="hover:text-primary hover:translate-x-1 inline-block transition-all">FAQ</Link></li>
+                            <li><Link href="/a-propos" className="hover:text-primary hover:translate-x-1 inline-block transition-all">Notre Démarche</Link></li>
                         </ul>
                     </div>
 
                     {/* Service Client */}
                     <div>
-                        <h4 className="font-serif text-lg font-semibold text-white mb-6">Service Client</h4>
+                        <h4 className="font-serif text-lg font-semibold text-white mb-6 flex items-center gap-2">
+                            <span className="w-6 h-px bg-primary/50" />
+                            Service Client
+                        </h4>
                         <ul className="space-y-4 text-sm text-stone-400">
-                            <li className="flex items-start gap-3">
-                                <Phone className="h-5 w-5 text-primary shrink-0" />
+                            <li className="flex items-start gap-3 group">
+                                <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                                    <Phone className="h-4 w-4 text-primary" />
+                                </div>
                                 <div>
                                     <span className="block text-white font-medium">06 99 55 69 77</span>
                                     <span className="text-xs">Lun-Ven, 9h-18h</span>
                                 </div>
                             </li>
-                            <li className="flex items-center gap-3">
-                                <Mail className="h-5 w-5 text-primary shrink-0" />
-                                <a href="mailto:Contact@orient-relais.com" className="hover:text-primary">Contact@orient-relais.com</a>
+                            <li className="flex items-center gap-3 group">
+                                <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                                    <Mail className="h-4 w-4 text-primary" />
+                                </div>
+                                <a href="mailto:Contact@orient-relais.com" className="hover:text-primary transition-colors">Contact@orient-relais.com</a>
                             </li>
-                            <li className="flex items-start gap-3">
-                                <MapPin className="h-5 w-5 text-primary shrink-0" />
+                            <li className="flex items-start gap-3 group">
+                                <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                                    <MapPin className="h-4 w-4 text-primary" />
+                                </div>
                                 <span>48 avenue de Touraine,<br />78310 MAUREPAS, France</span>
                             </li>
                         </ul>
@@ -67,31 +94,40 @@ export function Footer() {
 
                     {/* Newsletter */}
                     <div>
-                        <h4 className="font-serif text-lg font-semibold text-white mb-6">Newsletter</h4>
-                        <p className="text-sm text-stone-400 mb-4">
-                            Recevez nos conseils bien-être et -10% sur votre première commande.
-                        </p>
-                        <div className="space-y-3">
-                            <Input
-                                type="email"
-                                placeholder="Votre email"
-                                className="bg-stone-800 border-stone-700 text-stone-100 placeholder:text-stone-500 focus-visible:ring-primary focus-visible:border-primary"
-                            />
-                            <Button className="w-full bg-primary hover:bg-orange-600 text-white font-medium">
-                                Je m'inscris
-                            </Button>
+                        <h4 className="font-serif text-lg font-semibold text-white mb-6 flex items-center gap-2">
+                            <span className="w-6 h-px bg-primary/50" />
+                            Newsletter
+                        </h4>
+                        <div className="p-5 rounded-2xl bg-gradient-to-br from-stone-800/80 to-stone-800/40 border border-stone-700/50">
+                            <div className="flex items-center gap-2 mb-3">
+                                <Sparkles className="h-4 w-4 text-primary" />
+                                <span className="text-sm font-medium text-primary">-10% sur la 1ère commande</span>
+                            </div>
+                            <p className="text-sm text-stone-400 mb-4">
+                                Recevez nos conseils bien-être et offres exclusives.
+                            </p>
+                            <div className="space-y-3">
+                                <Input
+                                    type="email"
+                                    placeholder="Votre email"
+                                    className="bg-stone-900/50 border-stone-600 text-stone-100 placeholder:text-stone-500 focus-visible:ring-primary focus-visible:border-primary rounded-xl"
+                                />
+                                <Button className="w-full font-semibold rounded-xl gap-2 shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all">
+                                    Je m'inscris <ArrowRight className="h-4 w-4" />
+                                </Button>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div className="border-t border-stone-800 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
                     <p className="text-xs text-stone-500">
-                        © 2026 Orient Relais. SIRET 924 298 540 00015.
+                        © 2026 Orient Relais. SIRET 924 298 540 00015. Tous droits réservés.
                     </p>
                     <div className="flex gap-6 text-xs text-stone-500">
-                        <Link href="/mentions-legales" className="hover:text-stone-300">Mentions Légales</Link>
-                        <Link href="/cgv" className="hover:text-stone-300">CGV</Link>
-                        <Link href="/confidentialite" className="hover:text-stone-300">Politique de Confidentialité</Link>
+                        <Link href="/mentions-legales" className="hover:text-primary transition-colors">Mentions Légales</Link>
+                        <Link href="/cgv" className="hover:text-primary transition-colors">CGV</Link>
+                        <Link href="/confidentialite" className="hover:text-primary transition-colors">Confidentialité</Link>
                     </div>
                 </div>
             </div>

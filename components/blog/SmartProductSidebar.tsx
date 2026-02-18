@@ -22,7 +22,7 @@ export function SmartProductSidebar() {
                         <h5 className="font-semibold text-stone-900 text-sm">Savon d'Alep 40% Laurier</h5>
                         <p className="text-primary font-bold text-lg">12,90 €</p>
                     </div>
-                    <Button className="w-full bg-primary text-white hover:bg-orange-600">
+                    <Button className="w-full">
                         Ajouter au panier
                     </Button>
                 </div>

@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ChevronRight } from "lucide-react";
 import { ProductGallery } from "@/components/shop/ProductGallery";
-import { ProductInfoDynamic } from "@/components/shop/ProductInfoDynamic";
+import { ProductInfo } from "@/components/shop/ProductInfo";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProductCard } from "@/components/shop/ProductCard";
 import { ProductReviews } from "@/components/shop/ProductReviews";
@@ -40,14 +40,14 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     return (
         <div className="container mx-auto px-4 py-8">
             {/* Breadcrumb */}
-            <nav className="flex items-center gap-2 text-sm text-stone-500 mb-8 overflow-x-auto whitespace-nowrap">
-                <Link href="/" className="hover:text-primary">Accueil</Link>
-                <ChevronRight className="h-4 w-4" />
-                <Link href="/boutique" className="hover:text-primary">Boutique</Link>
-                <ChevronRight className="h-4 w-4" />
-                <Link href={`/categorie/${product.category}`} className="hover:text-primary">{category?.title || product.category}</Link>
-                <ChevronRight className="h-4 w-4" />
-                <span className="text-stone-900 font-medium">{product.title}</span>
+            <nav className="flex items-center gap-2 text-sm text-stone-500 mb-8 overflow-x-auto whitespace-nowrap px-4 py-3 bg-stone-50/50 rounded-xl border border-stone-100">
+                <Link href="/" className="hover:text-primary transition-colors font-medium">Accueil</Link>
+                <ChevronRight className="h-4 w-4 text-primary/40 flex-shrink-0" />
+                <Link href="/boutique" className="hover:text-primary transition-colors">Boutique</Link>
+                <ChevronRight className="h-4 w-4 text-primary/40 flex-shrink-0" />
+                <Link href={`/categorie/${product.category}`} className="hover:text-primary transition-colors">{category?.title || product.category}</Link>
+                <ChevronRight className="h-4 w-4 text-primary/40 flex-shrink-0" />
+                <span className="text-primary font-semibold truncate max-w-[200px]">{product.title}</span>
             </nav>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 mb-16">
@@ -55,13 +55,13 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                 <ProductGallery images={images} />
 
                 {/* Info & Conversion */}
-                <ProductInfoDynamic product={product} />
+                <ProductInfo product={product} />
             </div>
 
             {/* Content Tabs */}
             <div className="mb-20">
                 <Tabs defaultValue="description" className="w-full">
-                    <TabsList className="w-full justify-start border-b border-stone-200 rounded-none bg-transparent p-0 h-auto gap-8 overflow-x-auto">
+                    <TabsList className="w-full justify-start border-b-2 border-stone-100 rounded-none bg-transparent p-0 h-auto gap-8 overflow-x-auto">
                         <TabsTrigger value="description" className="rounded-none border-b-2 border-transparent px-0 py-3 font-serif text-lg text-stone-500 data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none hover:text-stone-800 transition-colors">
                             Description
                         </TabsTrigger>
@@ -71,6 +71,11 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                         {product.usage && (
                             <TabsTrigger value="conseils" className="rounded-none border-b-2 border-transparent px-0 py-3 font-serif text-lg text-stone-500 data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none hover:text-stone-800 transition-colors">
                                 Conseils d'utilisation
+                            </TabsTrigger>
+                        )}
+                        {product.characteristics && (
+                            <TabsTrigger value="caracteristiques" className="rounded-none border-b-2 border-transparent px-0 py-3 font-serif text-lg text-stone-500 data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none hover:text-stone-800 transition-colors">
+                                Caractéristiques
                             </TabsTrigger>
                         )}
                         <TabsTrigger value="avis" className="rounded-none border-b-2 border-transparent px-0 py-3 font-serif text-lg text-stone-500 data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none hover:text-stone-800 transition-colors">
@@ -141,7 +146,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                     </TabsContent>
 
                     <TabsContent value="bienfaits" className="pt-8">
-                        {product.benefits && product.benefits.length > 0 ? (
+                        {product.benefits && product.benefits.length > 0 && (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                                 {parseBenefits(product.benefits).map((benefit, i) => (
                                     <BenefitCard
@@ -153,7 +158,15 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                                     />
                                 ))}
                             </div>
-                        ) : (
+                        )}
+
+                        {product.detailedBenefits && (
+                            <div className={`prose prose-stone max-w-none prose-headings:font-serif prose-h4:text-lg prose-h4:text-primary prose-li:marker:text-primary ${product.benefits && product.benefits.length > 0 ? "mt-12 pt-8 border-t border-stone-100" : ""}`}>
+                                <div dangerouslySetInnerHTML={{ __html: product.detailedBenefits }} />
+                            </div>
+                        )}
+
+                        {(!product.benefits || product.benefits.length === 0) && !product.detailedBenefits && (
                             <p className="text-stone-500">Information non disponible pour ce produit.</p>
                         )}
                     </TabsContent>
@@ -166,6 +179,14 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                         </TabsContent>
                     )}
 
+                    {product.characteristics && (
+                        <TabsContent value="caracteristiques" className="pt-8">
+                            <div className="prose prose-stone max-w-none prose-headings:font-serif prose-h4:text-lg prose-h4:text-primary prose-ul:space-y-2 prose-li:marker:text-primary">
+                                <div dangerouslySetInnerHTML={{ __html: product.characteristics }} />
+                            </div>
+                        </TabsContent>
+                    )}
+
                     <TabsContent value="avis" className="pt-8">
                         <ProductReviews rating={product.rating} count={product.reviews} />
                     </TabsContent>
@@ -173,21 +194,35 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             </div>
 
             {/* Cross-Selling */}
-            {
-                relatedProducts.length > 0 && (
-                    <div>
-                        <h2 className="font-serif text-3xl font-bold text-stone-900 mb-8">Complétez votre rituel</h2>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                            {relatedProducts.map(product => (
-                                <ProductCard key={product.id} product={product} />
-                            ))}
-                            <div className="flex items-center justify-center bg-stone-50 rounded-lg border border-dashed border-stone-200 text-stone-400 text-sm p-4 text-center">
-                                D'autres trésors à venir...
-                            </div>
-                        </div>
+            {relatedProducts.length > 0 && (
+                <div className="relative py-16">
+                    {/* Decorative top line */}
+                    <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+
+                    <div className="text-center mb-12">
+                        <span className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-primary bg-primary/5 px-4 py-1.5 rounded-full border border-primary/10">
+                            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
+                            Vous pourriez aussi aimer
+                        </span>
+                        <h2 className="font-serif text-3xl font-bold text-stone-900 mt-4">Complétez votre rituel</h2>
+                        <p className="text-stone-500 mt-2 max-w-md mx-auto">Nos experts ont sélectionné ces produits pour accompagner votre achat.</p>
                     </div>
-                )
-            }
-        </div >
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        {relatedProducts.map(product => (
+                            <ProductCard key={product.id} product={product} />
+                        ))}
+                        <Link href="/boutique" className="flex flex-col items-center justify-center bg-gradient-to-br from-stone-900 to-stone-800 rounded-3xl border border-stone-700 text-stone-300 text-sm p-8 text-center hover:border-primary/50 transition-all group">
+                            {/* Gold glow */}
+                            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-20 h-10 bg-primary/20 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <div className="h-12 w-12 rounded-xl bg-primary/20 flex items-center justify-center text-primary mb-4 group-hover:scale-110 transition-transform border border-primary/30">
+                                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
+                            </div>
+                            <span className="font-serif font-bold text-white">Voir plus</span>
+                            <span className="text-xs text-stone-400 mt-1">Découvrir la boutique</span>
+                        </Link>
+                    </div>
+                </div>
+            )}
+        </div>
     );
 }

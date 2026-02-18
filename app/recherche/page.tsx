@@ -5,7 +5,7 @@ import { ProductCard } from "@/components/shop/ProductCard";
 import { Button } from "@/components/ui/button";
 import { Suspense } from "react";
 import Link from "next/link";
-import { ArrowLeft, Search } from "lucide-react";
+import { ArrowLeft, Search, Sparkles } from "lucide-react";
 import { ALL_PRODUCTS } from "@/data/products";
 
 function SearchResults() {
@@ -51,55 +51,63 @@ function SearchResults() {
                     ))}
                 </div>
             ) : (
-                <div className="text-center py-24 bg-stone-50 rounded-xl border border-stone-100">
-                    <div className="h-16 w-16 bg-stone-100 rounded-full mx-auto mb-6 flex items-center justify-center">
-                        <Search className="h-8 w-8 text-stone-400" />
+                <div className="relative text-center py-24 bg-gradient-to-br from-amber-50/50 to-stone-50 rounded-3xl border border-primary/10 overflow-hidden">
+                    {/* Decorative glow */}
+                    <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-60 h-30 bg-primary/10 blur-3xl" />
+
+                    <div className="relative z-10">
+                        <div className="h-20 w-20 bg-gradient-to-br from-primary/20 to-primary/5 rounded-2xl mx-auto mb-6 flex items-center justify-center border border-primary/20">
+                            <Search className="h-10 w-10 text-primary" />
+                        </div>
+                        <p className="text-2xl font-serif font-bold text-stone-900 mb-2">
+                            {query ? "Aucun résultat trouvé" : "Que recherchez-vous ?"}
+                        </p>
+                        <p className="text-stone-500 mb-8 max-w-md mx-auto">
+                            {query
+                                ? "Essayez avec un autre terme comme \"savon\", \"nigelle\", \"moringa\" ou \"coffret\"."
+                                : "Recherchez parmi nos produits bio: savons, huiles essentielles, compléments..."
+                            }
+                        </p>
+                        <div className="flex flex-wrap gap-2 justify-center mb-8">
+                            <Link href="/recherche?q=savon">
+                                <Button variant="outline" size="sm" className="rounded-full border-primary/30 hover:bg-primary/5 hover:border-primary">Savon</Button>
+                            </Link>
+                            <Link href="/recherche?q=huile">
+                                <Button variant="outline" size="sm" className="rounded-full border-primary/30 hover:bg-primary/5 hover:border-primary">Huile</Button>
+                            </Link>
+                            <Link href="/recherche?q=bio">
+                                <Button variant="outline" size="sm" className="rounded-full border-primary/30 hover:bg-primary/5 hover:border-primary">Bio</Button>
+                            </Link>
+                            <Link href="/recherche?q=miel">
+                                <Button variant="outline" size="sm" className="rounded-full border-primary/30 hover:bg-primary/5 hover:border-primary">Miel</Button>
+                            </Link>
+                        </div>
+                        <Button asChild className="bg-primary hover:bg-primary/90 shadow-lg shadow-primary/25">
+                            <Link href="/boutique">Voir toute la boutique</Link>
+                        </Button>
                     </div>
-                    <p className="text-xl font-serif text-stone-900 mb-2">
-                        {query ? "Aucun résultat trouvé." : "Entrez un terme de recherche"}
-                    </p>
-                    <p className="text-stone-500 mb-6 max-w-md mx-auto">
-                        {query
-                            ? "Essayez avec un autre terme comme \"savon\", \"nigelle\", \"moringa\" ou \"coffret\"."
-                            : "Recherchez parmi nos 33 produits bio: savons, huiles essentielles, compléments alimentaires..."
-                        }
-                    </p>
-                    <div className="flex flex-wrap gap-2 justify-center mb-6">
-                        <Link href="/recherche?q=savon">
-                            <Button variant="outline" size="sm">Savon</Button>
-                        </Link>
-                        <Link href="/recherche?q=huile">
-                            <Button variant="outline" size="sm">Huile</Button>
-                        </Link>
-                        <Link href="/recherche?q=bio">
-                            <Button variant="outline" size="sm">Bio</Button>
-                        </Link>
-                        <Link href="/recherche?q=miel">
-                            <Button variant="outline" size="sm">Miel</Button>
-                        </Link>
-                    </div>
-                    <Button asChild>
-                        <Link href="/boutique">Voir toute la boutique</Link>
-                    </Button>
                 </div>
             )}
 
             {/* Popular categories */}
             {results.length > 0 && (
-                <div className="mt-16 pt-8 border-t border-stone-200">
-                    <h2 className="font-serif text-xl font-bold text-stone-900 mb-4">Explorer par catégorie</h2>
+                <div className="mt-16 pt-8 relative">
+                    <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+                    <h2 className="font-serif text-xl font-bold text-stone-900 mb-4 flex items-center gap-2">
+                        <Sparkles className="h-5 w-5 text-primary" /> Explorer par catégorie
+                    </h2>
                     <div className="flex flex-wrap gap-3">
                         <Link href="/categorie/savons">
-                            <Button variant="outline">Savons d'Alep</Button>
+                            <Button variant="outline" className="rounded-full border-primary/30 hover:bg-primary/5 hover:border-primary">Savons d'Alep</Button>
                         </Link>
                         <Link href="/categorie/complements-alimentaires">
-                            <Button variant="outline">Compléments</Button>
+                            <Button variant="outline" className="rounded-full border-primary/30 hover:bg-primary/5 hover:border-primary">Compléments</Button>
                         </Link>
                         <Link href="/categorie/huiles-essentielles">
-                            <Button variant="outline">Huiles Essentielles</Button>
+                            <Button variant="outline" className="rounded-full border-primary/30 hover:bg-primary/5 hover:border-primary">Huiles Essentielles</Button>
                         </Link>
                         <Link href="/categorie/coffrets">
-                            <Button variant="outline">Coffrets</Button>
+                            <Button variant="outline" className="rounded-full border-primary/30 hover:bg-primary/5 hover:border-primary">Coffrets</Button>
                         </Link>
                     </div>
                 </div>

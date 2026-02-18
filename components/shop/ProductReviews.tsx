@@ -20,7 +20,7 @@ export function ProductReviews({ rating, count }: ProductReviewsProps) {
                         {[1, 2, 3, 4, 5].map((s) => (
                             <Star
                                 key={s}
-                                className={`w-5 h-5 ${s <= Math.round(rating) ? "fill-orange-400 text-orange-400" : "text-stone-300"}`}
+                                className={`w-5 h-5 ${s <= Math.round(rating) ? "fill-amber-400 text-amber-400" : "text-stone-300"}`}
                             />
                         ))}
                     </div>
@@ -61,7 +61,7 @@ export function ProductReviews({ rating, count }: ProductReviewsProps) {
                                 </div>
                                 <div className="flex gap-0.5">
                                     {[1, 2, 3, 4, 5].map((s) => (
-                                        <Star key={s} className="w-4 h-4 fill-orange-400 text-orange-400" />
+                                        <Star key={s} className="w-4 h-4 fill-amber-400 text-amber-400" />
                                     ))}
                                 </div>
                             </div>
@@ -82,7 +82,7 @@ export function ProductReviews({ rating, count }: ProductReviewsProps) {
                                 </div>
                                 <div className="flex gap-0.5">
                                     {[1, 2, 3, 4, 5].map((s) => (
-                                        <Star key={s} className="w-4 h-4 fill-orange-400 text-orange-400" />
+                                        <Star key={s} className="w-4 h-4 fill-amber-400 text-amber-400" />
                                     ))}
                                 </div>
                             </div>

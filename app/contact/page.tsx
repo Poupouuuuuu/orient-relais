@@ -7,7 +7,9 @@ export default function ContactPage() {
     return (
         <div className="container mx-auto px-4 py-16">
             <div className="max-w-2xl mx-auto text-center mb-16">
-                <span className="text-primary font-bold uppercase tracking-widest text-sm">Contactez-nous</span>
+                <span className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-primary bg-primary/5 px-4 py-1.5 rounded-full border border-primary/10 mb-4">
+                    <Mail className="h-4 w-4" /> Contactez-nous
+                </span>
                 <h1 className="font-serif text-4xl md:text-5xl font-bold text-stone-900 mt-2 mb-4">À votre écoute</h1>
                 <p className="text-stone-600 text-lg">
                     Une question sur un produit ? Un conseil personnalisé ? <br />
@@ -18,11 +20,11 @@ export default function ContactPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-16 max-w-5xl mx-auto">
                 {/* Contact Info */}
                 <div className="space-y-8">
-                    <div className="bg-stone-50 p-8 rounded-2xl border border-stone-200">
+                    <div className="bg-gradient-to-br from-amber-50/50 to-stone-50 p-8 rounded-2xl border border-primary/10 shadow-sm">
                         <h3 className="font-serif text-2xl font-bold text-stone-900 mb-6">Nos Coordonnées</h3>
                         <div className="space-y-6">
-                            <div className="flex items-start gap-4">
-                                <div className="h-10 w-10 bg-white rounded-full flex items-center justify-center text-primary shadow-sm">
+                            <div className="flex items-start gap-4 group">
+                                <div className="h-10 w-10 bg-white rounded-xl flex items-center justify-center text-primary shadow-sm transition-all group-hover:scale-110 group-hover:shadow-md group-hover:shadow-primary/20">
                                     <Mail className="h-5 w-5" />
                                 </div>
                                 <div>
@@ -30,8 +32,8 @@ export default function ContactPage() {
                                     <a href="mailto:Contact@orient-relais.com" className="text-stone-600 hover:text-primary">Contact@orient-relais.com</a>
                                 </div>
                             </div>
-                            <div className="flex items-start gap-4">
-                                <div className="h-10 w-10 bg-white rounded-full flex items-center justify-center text-primary shadow-sm">
+                            <div className="flex items-start gap-4 group">
+                                <div className="h-10 w-10 bg-white rounded-xl flex items-center justify-center text-primary shadow-sm transition-all group-hover:scale-110 group-hover:shadow-md group-hover:shadow-primary/20">
                                     <Phone className="h-5 w-5" />
                                 </div>
                                 <div>
@@ -39,8 +41,8 @@ export default function ContactPage() {
                                     <span className="text-stone-600">06 99 55 69 77</span>
                                 </div>
                             </div>
-                            <div className="flex items-start gap-4">
-                                <div className="h-10 w-10 bg-white rounded-full flex items-center justify-center text-primary shadow-sm">
+                            <div className="flex items-start gap-4 group">
+                                <div className="h-10 w-10 bg-white rounded-xl flex items-center justify-center text-primary shadow-sm transition-all group-hover:scale-110 group-hover:shadow-md group-hover:shadow-primary/20">
                                     <MapPin className="h-5 w-5" />
                                 </div>
                                 <div>
@@ -54,18 +56,27 @@ export default function ContactPage() {
                     </div>
 
                     <div>
-                        <h3 className="font-serif text-xl font-bold text-stone-900 mb-4">Questions Fréquentes</h3>
-                        <div className="space-y-4">
-                            <details className="bg-white border border-stone-200 rounded-lg p-4 cursor-pointer group">
-                                <summary className="font-medium text-stone-900 group-hover:text-primary">Quels sont les délais de livraison ?</summary>
-                                <p className="text-sm text-stone-600 mt-2 pl-4 border-l-2 border-stone-300">
+                        <h3 className="font-serif text-xl font-bold text-stone-900 mb-4 flex items-center gap-2">
+                            <span className="h-6 w-6 bg-primary/10 rounded-full flex items-center justify-center text-primary text-sm">?</span>
+                            Questions Fréquentes
+                        </h3>
+                        <div className="space-y-3">
+                            <details className="bg-white border border-stone-200 rounded-xl p-4 cursor-pointer group hover:border-primary/30 hover:shadow-md hover:shadow-primary/5 transition-all">
+                                <summary className="font-medium text-stone-900 group-hover:text-primary transition-colors">Quels sont les délais de livraison ?</summary>
+                                <p className="text-sm text-stone-600 mt-3 pl-4 border-l-2 border-primary/30">
                                     Nous expédions vos commandes sous 24h. La livraison en France met généralement 48h à 72h ouvrées (Colissimo ou Mondial Relay).
                                 </p>
                             </details>
-                            <details className="bg-white border border-stone-200 rounded-lg p-4 cursor-pointer group">
-                                <summary className="font-medium text-stone-900 group-hover:text-primary">Vos produits sont-ils certifiés Bio ?</summary>
-                                <p className="text-sm text-stone-600 mt-2 pl-4 border-l-2 border-stone-300">
+                            <details className="bg-white border border-stone-200 rounded-xl p-4 cursor-pointer group hover:border-primary/30 hover:shadow-md hover:shadow-primary/5 transition-all">
+                                <summary className="font-medium text-stone-900 group-hover:text-primary transition-colors">Vos produits sont-ils certifiés Bio ?</summary>
+                                <p className="text-sm text-stone-600 mt-3 pl-4 border-l-2 border-primary/30">
                                     Absolument. Nos savons et huiles sont certifiés par Ecocert et proviennent de l'agriculture biologique.
+                                </p>
+                            </details>
+                            <details className="bg-white border border-stone-200 rounded-xl p-4 cursor-pointer group hover:border-primary/30 hover:shadow-md hover:shadow-primary/5 transition-all">
+                                <summary className="font-medium text-stone-900 group-hover:text-primary transition-colors">Comment utiliser le savon d'Alep ?</summary>
+                                <p className="text-sm text-stone-600 mt-3 pl-4 border-l-2 border-primary/30">
+                                    Humidifiez le savon et faites-le mousser entre vos mains. Appliquez sur peau mouillée puis rincez. Laissez sécher à l'air libre entre utilisations.
                                 </p>
                             </details>
                         </div>
@@ -73,28 +84,32 @@ export default function ContactPage() {
                 </div>
 
                 {/* Form */}
-                <div className="bg-white p-8 rounded-2xl border border-stone-200 shadow-lg shadow-stone-200/50">
+                <div className="relative bg-white p-8 rounded-3xl border border-stone-200 shadow-xl shadow-stone-200/50 overflow-hidden">
+                    {/* Corner accent */}
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-primary/5 to-transparent" />
+                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-amber-400 to-primary" />
+
                     <h3 className="font-serif text-2xl font-bold text-stone-900 mb-6">Envoyez-nous un message</h3>
-                    <form className="space-y-4">
+                    <form className="space-y-5">
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
-                                <label htmlFor="name" className="text-sm font-medium text-stone-700">Nom</label>
-                                <Input id="name" placeholder="Votre nom" />
+                                <label htmlFor="name" className="text-sm font-bold text-stone-700">Nom</label>
+                                <Input id="name" placeholder="Votre nom" className="h-11 rounded-xl border-stone-200 focus:border-primary focus:ring-primary" />
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="email" className="text-sm font-medium text-stone-700">Email</label>
-                                <Input id="email" type="email" placeholder="votre@email.com" />
+                                <label htmlFor="email" className="text-sm font-bold text-stone-700">Email</label>
+                                <Input id="email" type="email" placeholder="votre@email.com" className="h-11 rounded-xl border-stone-200 focus:border-primary focus:ring-primary" />
                             </div>
                         </div>
                         <div className="space-y-2">
-                            <label htmlFor="subject" className="text-sm font-medium text-stone-700">Sujet</label>
-                            <Input id="subject" placeholder="Information produit, Commande..." />
+                            <label htmlFor="subject" className="text-sm font-bold text-stone-700">Sujet</label>
+                            <Input id="subject" placeholder="Information produit, Commande..." className="h-11 rounded-xl border-stone-200 focus:border-primary focus:ring-primary" />
                         </div>
                         <div className="space-y-2">
-                            <label htmlFor="message" className="text-sm font-medium text-stone-700">Message</label>
-                            <Textarea id="message" placeholder="Comment pouvons-nous vous aider ?" className="min-h-[150px]" />
+                            <label htmlFor="message" className="text-sm font-bold text-stone-700">Message</label>
+                            <Textarea id="message" placeholder="Comment pouvons-nous vous aider ?" className="min-h-[150px] rounded-xl border-stone-200 focus:border-primary focus:ring-primary" />
                         </div>
-                        <Button className="w-full h-12 bg-primary hover:bg-orange-600 text-white font-bold rounded-lg mt-2">
+                        <Button className="w-full h-12 font-bold rounded-xl bg-primary hover:bg-primary/90 shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all mt-4">
                             Envoyer le message
                         </Button>
                     </form>

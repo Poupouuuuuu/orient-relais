@@ -1,10 +1,7 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Lato } from "next/font/google";
 import "./globals.css";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
-import { CookieConsent } from "@/components/layout/CookieConsent";
-import { CartProvider } from "@/context/CartContext";
+import { ClientLayout } from "@/components/layout/ClientLayout";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -38,15 +35,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="fr">
       <body className={`${playfair.variable} ${lato.variable} antialiased flex flex-col min-h-screen`}>
-        <CartProvider>
-          <Header />
-          <main className="flex-1">
-            {children}
-          </main>
-          <Footer />
-          <CookieConsent />
-        </CartProvider>
+        <ClientLayout>
+          {children}
+        </ClientLayout>
       </body>
     </html>
   );
 }
+

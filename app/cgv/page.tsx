@@ -67,8 +67,8 @@ export default function CGVPage() {
                     <h2 className="font-serif text-2xl font-bold text-stone-800 mb-4">Article 6 - Contact</h2>
                     <p className="text-stone-600 leading-relaxed">
                         Pour toute question relative à votre commande :<br />
-                        Email : contact@orientrelais.com<br />
-                        Téléphone : 01 23 45 67 89 (Lun-Ven, 9h-18h)
+                        Email : Contact@orient-relais.com<br />
+                        Téléphone : 06 99 55 69 77 (Lun-Ven, 9h-18h)
                     </p>
                 </section>
             </div>

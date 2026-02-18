@@ -38,7 +38,7 @@ export default function CheckoutSuccessPage() {
                     </p>
                 </div>
 
-                <Button asChild className="w-full bg-primary hover:bg-orange-600 h-12 text-lg font-bold">
+                <Button asChild className="w-full h-12 text-lg font-bold">
                     <Link href="/">
                         Retour à la boutique
                     </Link>
