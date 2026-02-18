@@ -5,6 +5,21 @@ import Link from "next/link";
 import { CategoryProductGrid } from "@/components/shop/CategoryProductGrid";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, Sparkles, ArrowRight } from "lucide-react";
+import type { Metadata } from "next";
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+    const slug = (await params).slug;
+    const category = CATEGORIES.find(c => c.slug === slug);
+
+    if (!category) {
+        return { title: "Catégorie introuvable | Orient Relais" };
+    }
+
+    return {
+        title: `${category.title} | Orient Relais - Boutique Bio`,
+        description: category.description || `Découvrez notre sélection de ${category.title.toLowerCase()} bio et naturels. Livraison offerte dès 39€.`,
+    };
+}
 
 interface CategoryConfig {
     title: string;

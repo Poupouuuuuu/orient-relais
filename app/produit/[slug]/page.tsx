@@ -10,6 +10,27 @@ import { ProductReviews } from "@/components/shop/ProductReviews";
 import { BenefitCard } from "@/components/shop/BenefitCard";
 import { parseBenefits } from "@/lib/benefits";
 import { getProductBySlug, ALL_PRODUCTS, CATEGORIES } from "@/data/products";
+import type { Metadata } from "next";
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+    const slug = (await params).slug;
+    const product = getProductBySlug(slug);
+
+    if (!product) {
+        return { title: "Produit introuvable | Orient Relais" };
+    }
+
+    return {
+        title: `${product.title} | Orient Relais`,
+        description: product.shortDescription || product.description.replace(/<[^>]*>/g, '').slice(0, 160),
+        openGraph: {
+            title: product.title,
+            description: product.shortDescription || product.description.replace(/<[^>]*>/g, '').slice(0, 160),
+            images: [{ url: product.image, width: 600, height: 600, alt: product.title }],
+            type: "website",
+        },
+    };
+}
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
     const slug = (await params).slug;
@@ -37,8 +58,37 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     const category = CATEGORIES.find(c => c.slug === product.category);
     const images = product.images || [product.image, product.image, product.image];
 
+    const jsonLd = {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        name: product.title,
+        image: `https://orient-relais.com${product.image}`,
+        description: product.shortDescription || product.description.replace(/<[^>]*>/g, '').slice(0, 200),
+        brand: {
+            "@type": "Brand",
+            name: category?.title || "Orient Relais",
+        },
+        offers: {
+            "@type": "Offer",
+            url: `https://orient-relais.com/produit/${product.slug}`,
+            priceCurrency: "EUR",
+            price: product.price.toFixed(2),
+            availability: product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+        },
+        aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: product.rating.toString(),
+            reviewCount: product.reviews.toString(),
+        },
+    };
+
     return (
         <div className="container mx-auto px-4 py-8">
+            {/* JSON-LD Structured Data */}
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
             {/* Breadcrumb */}
             <nav className="flex items-center gap-2 text-sm text-stone-500 mb-8 overflow-x-auto whitespace-nowrap px-4 py-3 bg-stone-50/50 rounded-xl border border-stone-100">
                 <Link href="/" className="hover:text-primary transition-colors font-medium">Accueil</Link>

@@ -3,6 +3,11 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Mail, MapPin, Phone } from "lucide-react";
 
+export const metadata = {
+    title: "Contact | Orient Relais - Boutique Bio",
+    description: "Contactez Orient Relais pour toute question sur nos produits bio. Email, téléphone ou formulaire de contact. Réponse sous 24h ouvrées.",
+};
+
 export default function ContactPage() {
     return (
         <div className="container mx-auto px-4 py-16">
