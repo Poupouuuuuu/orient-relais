@@ -1,42 +1,26 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { Product } from "@/data/products";
 import { ProductFilters } from "@/components/shop/ProductFilters";
-import { ProductCard, ProductProps } from "@/components/shop/ProductCard";
+import { ProductCard } from "@/components/shop/ProductCard";
 import { Button } from "@/components/ui/button";
 import { SlidersHorizontal, Sparkles } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { WooProduct } from "@/lib/woocommerce-types";
 
 interface CategoryProductGridProps {
     category: string;
-    products: Product[];
+    products: WooProduct[];
     productCount: number;
 }
 
-// Helper to convert Product to ProductProps
-function toProductProps(p: Product): ProductProps {
-    return {
-        id: p.id,
-        title: p.title,
-        price: p.price,
-        image: p.image,
-        rating: p.rating,
-        reviews: p.reviews,
-        badges: p.badges,
-        slug: p.slug,
-    };
-}
-
 export function CategoryProductGrid({ category, products, productCount }: CategoryProductGridProps) {
-    const [filteredProducts, setFilteredProducts] = useState<Product[]>(products);
+    const [filteredProducts, setFilteredProducts] = useState<WooProduct[]>(products);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
 
-    const handleFilterChange = useCallback((filtered: Product[]) => {
+    const handleFilterChange = useCallback((filtered: WooProduct[]) => {
         setFilteredProducts(filtered);
     }, []);
-
-    const displayProducts = filteredProducts.map(toProductProps);
 
     return (
         <div className="flex flex-col lg:flex-row gap-10">
@@ -104,9 +88,9 @@ export function CategoryProductGrid({ category, products, productCount }: Catego
                     </p>
                 </div>
 
-                {displayProducts.length > 0 ? (
+                {filteredProducts.length > 0 ? (
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
-                        {displayProducts.map((product) => (
+                        {filteredProducts.map((product) => (
                             <ProductCard key={product.id} product={product} />
                         ))}
                     </div>

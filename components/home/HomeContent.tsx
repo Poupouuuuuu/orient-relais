@@ -6,11 +6,11 @@ import { useRef } from "react";
 import { ArrowRight, Leaf, Lock, Truck, ShieldCheck, Heart, Sparkles, Quote, ChevronLeft, ChevronRight } from "lucide-react";
 import { ProductCard } from "@/components/shop/ProductCard";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/animations";
-import type { Product } from "@/data/products";
+import { WooProduct } from "@/lib/woocommerce-types";
 
 interface HomeContentProps {
-    featuredProducts: Product[];
-    promoProducts: Product[];
+    featuredProducts: WooProduct[];
+    promoProducts: WooProduct[];
 }
 
 export function HomeContent({ featuredProducts, promoProducts }: HomeContentProps) {
@@ -32,7 +32,7 @@ export function HomeContent({ featuredProducts, promoProducts }: HomeContentProp
                     <StaggerContainer className="grid grid-cols-1 md:grid-cols-4 gap-4 md:h-[600px]" staggerDelay={0.15}>
                         {/* Grande Carte - Savon */}
                         <StaggerItem className="md:col-span-2 md:row-span-2">
-                            <Link href="/categorie/savons" className="group block h-full relative overflow-hidden rounded-3xl bg-white border border-stone-200 min-h-[300px] hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500">
+                            <Link href="/categorie/savons-dalep" className="group block h-full relative overflow-hidden rounded-3xl bg-white border border-stone-200 min-h-[300px] hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500">
                                 <Image
                                     src="/bento-soap.png"
                                     alt="Texture Savon d'Alep"
@@ -41,7 +41,7 @@ export function HomeContent({ featuredProducts, promoProducts }: HomeContentProp
                                     className="object-cover transition-transform duration-700 group-hover:scale-105"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-stone-900/90 via-stone-900/30 to-transparent flex flex-col justify-end p-8">
-                                    <h3 className="text-3xl font-serif font-bold text-white mb-2 drop-shadow-lg">Savons d'Alep Bio</h3>
+                                    <h3 className="text-3xl font-serif font-bold text-white mb-2 drop-shadow-lg">Savons d'Alep</h3>
                                     <p className="text-stone-200 text-sm">L'or vert de l'Orient, purifiant et apaisant.</p>
                                 </div>
                             </Link>
@@ -49,7 +49,7 @@ export function HomeContent({ featuredProducts, promoProducts }: HomeContentProp
 
                         {/* Carte Moyenne - Compléments */}
                         <StaggerItem className="md:col-span-2 md:row-span-1">
-                            <Link href="/categorie/complements-alimentaires" className="group block h-full relative overflow-hidden rounded-3xl bg-white border border-stone-200 min-h-[200px] hover:shadow-xl hover:shadow-primary/10 transition-all duration-500">
+                            <Link href="/categorie/complements" className="group block h-full relative overflow-hidden rounded-3xl bg-white border border-stone-200 min-h-[200px] hover:shadow-xl hover:shadow-primary/10 transition-all duration-500">
                                 <Image
                                     src="/images/categories/Compléments alimentaires.webp"
                                     alt="Compléments Alimentaires Bio"
@@ -125,18 +125,7 @@ export function HomeContent({ featuredProducts, promoProducts }: HomeContentProp
                     <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" staggerDelay={0.1}>
                         {featuredProducts.map((product) => (
                             <StaggerItem key={product.id}>
-                                <ProductCard
-                                    product={{
-                                        id: product.id,
-                                        title: product.title,
-                                        price: product.price,
-                                        image: product.image,
-                                        rating: product.rating,
-                                        reviews: product.reviews,
-                                        badges: product.badges,
-                                        slug: product.slug,
-                                    }}
-                                />
+                                <ProductCard product={product} />
                             </StaggerItem>
                         ))}
                     </StaggerContainer>
@@ -249,7 +238,7 @@ function TestimonialCard({ name, location, rating, text }: { name: string, locat
     );
 }
 
-function PromoCarousel({ products }: { products: Product[] }) {
+function PromoCarousel({ products }: { products: WooProduct[] }) {
     const scrollRef = useRef<HTMLDivElement>(null);
 
     const scroll = (direction: "left" | "right") => {
@@ -306,18 +295,7 @@ function PromoCarousel({ products }: { products: Product[] }) {
                             key={product.id}
                             className="flex-shrink-0 w-[280px] sm:w-[300px] snap-start"
                         >
-                            <ProductCard
-                                product={{
-                                    id: product.id,
-                                    title: product.title,
-                                    price: product.price,
-                                    image: product.image,
-                                    rating: product.rating,
-                                    reviews: product.reviews,
-                                    badges: product.badges,
-                                    slug: product.slug,
-                                }}
-                            />
+                            <ProductCard product={product} />
                         </div>
                     ))}
                 </div>

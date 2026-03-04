@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Lato } from "next/font/google";
+import { Playfair_Display, Manrope } from "next/font/google";
 import "./globals.css";
 import { ClientLayout } from "@/components/layout/ClientLayout";
 
@@ -8,10 +8,9 @@ const playfair = Playfair_Display({
   variable: "--font-playfair",
 });
 
-const lato = Lato({
+const manrope = Manrope({
   subsets: ["latin"],
-  weight: ["300", "400", "700"],
-  variable: "--font-lato",
+  variable: "--font-manrope",
 });
 
 export const metadata: Metadata = {
@@ -34,7 +33,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
   return (
     <html lang="fr">
-      <body className={`${playfair.variable} ${lato.variable} antialiased flex flex-col min-h-screen`}>
+      <body className={`${playfair.variable} ${manrope.variable} antialiased flex flex-col min-h-screen font-sans`}>
         <ClientLayout>
           {children}
         </ClientLayout>

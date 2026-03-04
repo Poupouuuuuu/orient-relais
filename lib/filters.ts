@@ -1,12 +1,9 @@
-// Filter system configuration for Orient Relais
-// Each category has its own set of relevant filters
-
-import { Product } from "@/data/products";
+import { WooProduct } from "@/lib/woocommerce-types";
 
 export interface FilterOption {
     value: string;
     label: string;
-    count?: number; // Number of products matching this filter
+    count?: number;
 }
 
 export interface FilterConfig {
@@ -18,75 +15,50 @@ export interface FilterConfig {
     max?: number;
 }
 
-export interface CategoryFilterConfig {
-    categorySlug: string;
-    filters: FilterConfig[];
+export interface ActiveFilters {
+    [key: string]: string[] | [number, number];
 }
 
-// Extracts unique values from products for a given key
-export function extractUniqueValues(products: Product[], key: keyof Product): string[] {
-    const values = new Set<string>();
+// Extracts unique values from attributes
+export function extractAttributeValues(products: WooProduct[], attributeName: string): FilterOption[] {
+    const counts = new Map<string, number>();
+
     products.forEach(p => {
-        const value = p[key];
-        if (Array.isArray(value)) {
-            value.forEach(v => values.add(String(v)));
-        } else if (value) {
-            values.add(String(value));
+        const attr = p.attributes.find(a => a.name === attributeName);
+        if (attr) {
+            attr.options.forEach(opt => {
+                counts.set(opt, (counts.get(opt) || 0) + 1);
+            });
         }
     });
-    return Array.from(values).sort();
+
+    return Array.from(counts.entries())
+        .map(([value, count]) => ({ value, label: value, count }))
+        .sort((a, b) => b.count - a.count);
 }
 
-// Extracts unique benefits from products
-export function extractBenefits(products: Product[]): FilterOption[] {
-    const benefitCounts = new Map<string, number>();
+// Extracts tags (used for badges/certs)
+export function extractTags(products: WooProduct[], allowedTags?: string[]): FilterOption[] {
+    const counts = new Map<string, number>();
+
     products.forEach(p => {
-        p.benefits?.forEach(benefit => {
-            // Extract just the keyword from benefits like "🛡️ Immunité : Renforce..."
-            const cleanBenefit = benefit.split(":")[0].replace(/[^\w\sàâäéèêëïîôùûüç'-]/gi, "").trim();
-            if (cleanBenefit) {
-                benefitCounts.set(cleanBenefit, (benefitCounts.get(cleanBenefit) || 0) + 1);
+        p.tags.forEach(tag => {
+            if (!allowedTags || allowedTags.includes(tag.name)) {
+                counts.set(tag.name, (counts.get(tag.name) || 0) + 1);
             }
         });
     });
-    return Array.from(benefitCounts.entries())
+
+    return Array.from(counts.entries())
         .map(([value, count]) => ({ value, label: value, count }))
-        .sort((a, b) => b.count! - a.count!);
+        .sort((a, b) => b.count - a.count);
 }
 
-// Extracts certifications from products
-export function extractCertifications(products: Product[]): FilterOption[] {
-    const certMap: Record<string, string> = {
-        bio: "Bio",
-        vegan: "Vegan",
-        ecocert: "Ecocert",
-        cosmos: "Cosmos Organic",
-        france: "Fabriqué en France",
-        ab: "Agriculture Bio",
-        gelules: "Gélules végétales"
-    };
-
-    const certCounts = new Map<string, number>();
-    products.forEach(p => {
-        p.certifications?.forEach(cert => {
-            certCounts.set(cert, (certCounts.get(cert) || 0) + 1);
-        });
-    });
-
-    return Array.from(certCounts.entries())
-        .map(([value, count]) => ({
-            value,
-            label: certMap[value] || value,
-            count
-        }))
-        .filter(opt => opt.count! > 0)
-        .sort((a, b) => b.count! - a.count!);
-}
-
-// Gets price range from products
-export function getPriceRange(products: Product[]): { min: number; max: number } {
+// Gets price range
+export function getPriceRange(products: WooProduct[]): { min: number; max: number } {
     if (products.length === 0) return { min: 0, max: 100 };
-    const prices = products.map(p => p.price).filter(p => p > 0);
+    const prices = products.map(p => parseFloat(p.price)).filter(p => !isNaN(p) && p > 0);
+    if (prices.length === 0) return { min: 0, max: 100 };
     return {
         min: Math.floor(Math.min(...prices)),
         max: Math.ceil(Math.max(...prices))
@@ -94,10 +66,13 @@ export function getPriceRange(products: Product[]): { min: number; max: number }
 }
 
 // Category-specific filter configurations
-export function getFiltersForCategory(category: string, products: Product[]): FilterConfig[] {
+export function getFiltersForCategory(categorySlug: string, products: WooProduct[]): FilterConfig[] {
     const priceRange = getPriceRange(products);
-    const benefits = extractBenefits(products);
-    const certifications = extractCertifications(products);
+    const benefits = extractAttributeValues(products, "Bienfaits");
+
+    // Define which tags represent certifications/labels
+    const certTags = data.certifications || ["Bio", "Vegan", "Ecocert", "Naturel"];
+    const certifications = extractTags(products, certTags);
 
     const baseFilters: FilterConfig[] = [
         {
@@ -109,163 +84,43 @@ export function getFiltersForCategory(category: string, products: Product[]): Fi
         }
     ];
 
-    switch (category) {
-        case "savons":
-            return [
-                {
-                    key: "subcategory",
-                    label: "Type de savon",
-                    type: "checkbox",
-                    options: [
-                        { value: "solide", label: "Savon solide", count: products.filter(p => !p.subcategory || p.subcategory !== "savon-liquide").length },
-                        { value: "savon-liquide", label: "Savon liquide / Gel", count: products.filter(p => p.subcategory === "savon-liquide").length }
-                    ]
-                },
-                {
-                    key: "benefits",
-                    label: "Bienfaits",
-                    type: "checkbox",
-                    options: benefits.slice(0, 6)
-                },
-                ...baseFilters
-            ];
+    // Generic filters based on category
+    // We can customize this further based on real attributes in WooCommerce
+    const filters: FilterConfig[] = [];
 
-        case "complements-alimentaires":
-            return [
-                {
-                    key: "form",
-                    label: "Forme",
-                    type: "checkbox",
-                    options: [
-                        { value: "gelules", label: "Gélules", count: products.filter(p => p.title.toLowerCase().includes("gélule")).length },
-                        { value: "poudre", label: "Poudre", count: products.filter(p => p.title.toLowerCase().includes("poudre")).length },
-                        { value: "miel", label: "Miel / Liquide", count: products.filter(p => p.title.toLowerCase().includes("miel") || p.subcategory === "miels").length }
-                    ].filter(opt => opt.count > 0)
-                },
-                {
-                    key: "certifications",
-                    label: "Certifications",
-                    type: "checkbox",
-                    options: certifications
-                },
-                {
-                    key: "benefits",
-                    label: "Bienfaits santé",
-                    type: "checkbox",
-                    options: benefits.slice(0, 8)
-                },
-                ...baseFilters
-            ];
+    // 1. Subcategory filter (Simulated via tags or specific attributes)
+    // In Mock data, subcategories are not explicitly defined fields, but we can infer them if needed.
+    // For now, let's skip subcategory unless we have a specific attribute for it.
 
-        case "huiles-essentielles":
-            return [
-                {
-                    key: "usage",
-                    label: "Usage",
-                    type: "checkbox",
-                    options: [
-                        { value: "diffusion", label: "Diffusion atmosphérique" },
-                        { value: "massage", label: "Massage / Application cutanée" },
-                        { value: "inhalation", label: "Inhalation" }
-                    ]
-                },
-                {
-                    key: "benefits",
-                    label: "Propriétés",
-                    type: "checkbox",
-                    options: benefits.slice(0, 6)
-                },
-                {
-                    key: "certifications",
-                    label: "Labels",
-                    type: "checkbox",
-                    options: certifications
-                },
-                ...baseFilters
-            ];
-
-        case "soins":
-            return [
-                {
-                    key: "zone",
-                    label: "Zone du corps",
-                    type: "checkbox",
-                    options: [
-                        { value: "visage", label: "Visage", count: products.filter(p => p.title.toLowerCase().includes("visage") || p.benefits?.some(b => b.toLowerCase().includes("visage"))).length },
-                        { value: "corps", label: "Corps", count: products.filter(p => p.title.toLowerCase().includes("corps") || p.title.toLowerCase().includes("baume")).length },
-                        { value: "cheveux", label: "Cheveux", count: products.filter(p => p.title.toLowerCase().includes("cheveux") || p.benefits?.some(b => b.toLowerCase().includes("cheveux"))).length }
-                    ].filter(opt => opt.count! > 0)
-                },
-                {
-                    key: "benefits",
-                    label: "Bienfaits",
-                    type: "checkbox",
-                    options: benefits.slice(0, 6)
-                },
-                {
-                    key: "certifications",
-                    label: "Certifications",
-                    type: "checkbox",
-                    options: certifications
-                },
-                ...baseFilters
-            ];
-
-        case "coffrets":
-            return [
-                {
-                    key: "occasion",
-                    label: "Occasion",
-                    type: "checkbox",
-                    options: [
-                        { value: "offrir", label: "Idée cadeau" },
-                        { value: "decouverte", label: "Découverte" },
-                        { value: "soin", label: "Rituel soin" }
-                    ]
-                },
-                ...baseFilters
-            ];
-
-        default:
-            // Page Boutique globale ou catégorie inconnue
-            return [
-                {
-                    key: "category",
-                    label: "Catégorie",
-                    type: "checkbox",
-                    options: [
-                        { value: "savons", label: "Savons d'Alep" },
-                        { value: "complements-alimentaires", label: "Compléments" },
-                        { value: "huiles-essentielles", label: "Huiles Essentielles" },
-                        { value: "soins", label: "Soins & Cosmétiques" },
-                        { value: "coffrets", label: "Coffrets" }
-                    ]
-                },
-                {
-                    key: "certifications",
-                    label: "Labels",
-                    type: "checkbox",
-                    options: certifications
-                },
-                {
-                    key: "promo",
-                    label: "Promotions",
-                    type: "checkbox",
-                    options: [
-                        { value: "promo", label: "En promotion", count: products.filter(p => p.originalPrice && p.originalPrice > p.price).length }
-                    ]
-                },
-                ...baseFilters
-            ];
+    // 2. Benefits
+    if (benefits.length > 0) {
+        filters.push({
+            key: "benefits",
+            label: "Bienfaits",
+            type: "checkbox",
+            options: benefits.slice(0, 8)
+        });
     }
+
+    // 3. Certifications
+    if (certifications.length > 0) {
+        filters.push({
+            key: "tags",
+            label: "Labels",
+            type: "checkbox",
+            options: certifications
+        });
+    }
+
+    return [...filters, ...baseFilters];
 }
 
-// Filter products based on active filters
-export interface ActiveFilters {
-    [key: string]: string[] | [number, number];
-}
+// Data for allowed tags to be considered as certifications
+const data = {
+    certifications: ["Bio", "Vegan", "Ecocert", "Cosmos Organic", "Fabriqué en France", "Agriculture Bio", "Gélules végétales", "Eco", "Naturel"]
+};
 
-export function filterProducts(products: Product[], filters: ActiveFilters): Product[] {
+export function filterProducts(products: WooProduct[], filters: ActiveFilters): WooProduct[] {
     return products.filter(product => {
         for (const [key, value] of Object.entries(filters)) {
             if (!value || (Array.isArray(value) && value.length === 0)) continue;
@@ -274,63 +129,28 @@ export function filterProducts(products: Product[], filters: ActiveFilters): Pro
                 case "price":
                     if (Array.isArray(value) && value.length === 2) {
                         const [min, max] = value as [number, number];
-                        if (product.price < min || product.price > max) return false;
-                    }
-                    break;
-
-                case "subcategory":
-                    if (Array.isArray(value) && value.length > 0) {
-                        const values = value as string[];
-                        if (values.includes("solide") && product.subcategory === "savon-liquide") return false;
-                        if (values.includes("savon-liquide") && product.subcategory !== "savon-liquide") return false;
-                    }
-                    break;
-
-                case "certifications":
-                    if (Array.isArray(value) && value.length > 0) {
-                        const requiredCerts = value as string[];
-                        if (!requiredCerts.some(cert => product.certifications?.includes(cert))) return false;
+                        const price = parseFloat(product.price);
+                        if (price < min || price > max) return false;
                     }
                     break;
 
                 case "benefits":
-                    if (Array.isArray(value) && value.length > 0) {
-                        const requiredBenefits = value as string[];
-                        if (!requiredBenefits.some(benefit =>
-                            product.benefits?.some(b => b.toLowerCase().includes(benefit.toLowerCase()))
-                        )) return false;
+                    if (Array.isArray(value)) {
+                        const required = value as string[];
+                        const productBenefits = product.attributes.find(a => a.name === "Bienfaits")?.options || [];
+                        if (!required.some(r => productBenefits.includes(r))) return false;
                     }
                     break;
 
-                case "category":
-                    if (Array.isArray(value) && value.length > 0) {
-                        const categories = value as string[];
-                        if (!categories.includes(product.category)) return false;
+                case "tags": // Certifications are tags
+                    if (Array.isArray(value)) {
+                        const required = value as string[];
+                        const productTags = product.tags.map(t => t.name);
+                        if (!required.some(r => productTags.includes(r))) return false;
                     }
                     break;
 
-                case "promo":
-                    if (Array.isArray(value) && value.length > 0) {
-                        // Check if promo filter is active
-                        if ((value as string[]).indexOf("promo") !== -1) {
-                            if (!product.originalPrice || product.originalPrice <= product.price) return false;
-                        }
-                    }
-                    break;
-
-                case "form":
-                    if (Array.isArray(value) && value.length > 0) {
-                        const forms = value as string[];
-                        const title = product.title.toLowerCase();
-                        const matchesForm = forms.some(form => {
-                            if (form === "gelules") return title.includes("gélule");
-                            if (form === "poudre") return title.includes("poudre");
-                            if (form === "miel") return title.includes("miel") || product.subcategory === "miels";
-                            return false;
-                        });
-                        if (!matchesForm) return false;
-                    }
-                    break;
+                // Add specific logic for other keys if needed
             }
         }
         return true;

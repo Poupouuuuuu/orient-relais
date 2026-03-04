@@ -4,74 +4,71 @@
 
 @layer base {
   :root {
-    --background: 40 20% 99%;
-    /* Warm off-white */
-    --foreground: 24 10% 10%;
-
-    /* Oriental Texture Pattern Variables */
-    --pattern-color: 43 50% 55%;
-    /* Matches Primary */
-    --pattern-opacity: 0.03;
+    --background: 0 0% 100%;
+    /* Pure White */
+    --foreground: 166 39% 17%;
+    /* Deep Empire Green (#1A3C34) */
 
     --card: 0 0% 100%;
-    --card-foreground: 24 10% 10%;
+    --card-foreground: 166 39% 17%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 24 10% 10%;
+    --popover-foreground: 166 39% 17%;
 
-    --primary: 43 55% 48%;
-    /* Sable Doré - Deeper Gold for better contrast */
+    --primary: 166 39% 17%;
+    /* Deep Empire Green (#1A3C34) */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 150 20% 30%;
-    /* Deep Laurel Green */
+    --secondary: 170 11% 33%;
+    /* Sage Green (#4A5D5A) */
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 40 10% 96%;
-    --muted-foreground: 25 5% 45%;
+    --muted: 166 10% 96%;
+    --muted-foreground: 166 10% 40%;
 
-    --accent: 40 20% 96%;
-    --accent-foreground: 24 10% 10%;
+    --accent: 46 65% 52%;
+    /* Gold (#D4AF37) - Used for Luxury Badges */
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 60 9.1% 97.8%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 40 10% 92%;
-    --input: 40 10% 92%;
-    --ring: 20 65% 50%;
+    --border: 166 10% 90%;
+    --input: 166 10% 90%;
+    --ring: 166 39% 17%;
 
-    --radius: 0.5rem;
-    /* Slightly tighter radius */
+    --radius: 0rem;
+    /* Najel uses sharp edges or very slight radius */
   }
 
   .dark {
-    --background: 24 10% 10%;
-    --foreground: 60 9.1% 97.8%;
+    --background: 166 40% 10%;
+    --foreground: 0 0% 98%;
 
-    --card: 24 10% 12%;
-    --card-foreground: 60 9.1% 97.8%;
+    --card: 166 40% 12%;
+    --card-foreground: 0 0% 98%;
 
-    --popover: 24 10% 12%;
-    --popover-foreground: 60 9.1% 97.8%;
+    --popover: 166 40% 12%;
+    --popover-foreground: 0 0% 98%;
 
-    --primary: 29 100% 63%;
+    --primary: 166 40% 40%;
     --primary-foreground: 0 0% 98%;
 
-    --secondary: 73 100% 36%;
+    --secondary: 170 11% 33%;
     --secondary-foreground: 0 0% 98%;
 
-    --muted: 24 10% 15%;
-    --muted-foreground: 24 5% 65%;
+    --muted: 166 40% 20%;
+    --muted-foreground: 166 10% 70%;
 
-    --accent: 24 10% 15%;
-    --accent-foreground: 60 9.1% 97.8%;
+    --accent: 46 65% 52%;
+    --accent-foreground: 0 0% 98%;
 
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 60 9.1% 97.8%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 24 10% 15%;
-    --input: 24 10% 15%;
-    --ring: 29 100% 63%;
+    --border: 166 40% 20%;
+    --input: 166 40% 20%;
+    --ring: 166 40% 40%;
   }
 }
 
@@ -82,11 +79,7 @@
 
   body {
     @apply bg-background text-foreground;
-    background-image:
-      radial-gradient(circle at 100% 100%, hsla(var(--pattern-color) / var(--pattern-opacity)) 1px, transparent 1px),
-      radial-gradient(circle at 0% 0%, hsla(var(--pattern-color) / var(--pattern-opacity)) 1px, transparent 1px);
-    background-size: 40px 40px;
-    background-attachment: fixed;
+    /* Removed Oriental Pattern for cleaner look */
   }
 
   h1,

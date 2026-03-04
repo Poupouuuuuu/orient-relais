@@ -3,13 +3,17 @@
 import { CheckCircle2, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
-// We can just add a simple useEffect for confetti if needed later, but clean UI is good enough.
+function SuccessContent() {
+    const searchParams = useSearchParams();
+    const paymentIntentId = searchParams.get("payment_intent");
 
-export default function CheckoutSuccessPage() {
-
-    // Confetti effect removed for performance/stability
+    // Generate a display order number from the payment intent ID
+    const orderNumber = paymentIntentId
+        ? `OR-${paymentIntentId.slice(-8).toUpperCase()}`
+        : `OR-${Math.floor(Math.random() * 100000)}`;
 
     return (
         <div className="min-h-screen bg-stone-50 flex flex-col items-center justify-center p-4">
@@ -29,13 +33,21 @@ export default function CheckoutSuccessPage() {
                             <Package className="h-5 w-5 text-stone-600" />
                         </div>
                         <div>
-                            <p className="text-sm font-bold text-stone-900">Commande #OR-{Math.floor(Math.random() * 100000)}</p>
+                            <p className="text-sm font-bold text-stone-900">Commande #{orderNumber}</p>
                             <p className="text-xs text-stone-500">Préparation en cours</p>
                         </div>
                     </div>
                     <p className="text-sm text-stone-600">
                         Votre commande sera expédiée sous 24h. Nous prenons le plus grand soin à emballer vos produits.
                     </p>
+
+                    {paymentIntentId && (
+                        <div className="mt-4 pt-4 border-t border-stone-200">
+                            <p className="text-xs text-stone-400">
+                                Référence paiement : {paymentIntentId}
+                            </p>
+                        </div>
+                    )}
                 </div>
 
                 <Button asChild className="w-full h-12 text-lg font-bold">
@@ -45,5 +57,17 @@ export default function CheckoutSuccessPage() {
                 </Button>
             </div>
         </div>
+    );
+}
+
+export default function CheckoutSuccessPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-stone-50 flex items-center justify-center">
+                <div className="h-8 w-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+            </div>
+        }>
+            <SuccessContent />
+        </Suspense>
     );
 }

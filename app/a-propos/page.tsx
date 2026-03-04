@@ -114,7 +114,7 @@ export default function AboutPage() {
                             <li className="flex items-center gap-2"><span className="text-primary">✓</span> Nettoie et purifie</li>
                             <li className="flex items-center gap-2"><span className="text-primary">✓</span> Hydrate et nourrit</li>
                         </ul>
-                        <Link href="/categorie/savons">
+                        <Link href="/categorie/savons-dalep">
                             <Button className="h-12 px-8 mt-4">
                                 Découvrir nos savons
                             </Button>
@@ -147,7 +147,7 @@ export default function AboutPage() {
                             Découvrez notre sélection pour renforcer votre bien-être. Spiruline, gelée royale, nigelle,
                             vitamines... Chaque produit est sélectionné avec soin.
                         </p>
-                        <Link href="/categorie/complements-alimentaires" className="text-primary font-bold hover:text-amber-300 inline-flex items-center gap-2 transition-colors group-hover:gap-3">
+                        <Link href="/categorie/complements" className="text-primary font-bold hover:text-amber-300 inline-flex items-center gap-2 transition-colors group-hover:gap-3">
                             Voir les compléments <span className="transition-transform group-hover:translate-x-1">→</span>
                         </Link>
                     </div>

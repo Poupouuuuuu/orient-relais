@@ -4,42 +4,60 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Star, ShoppingCart, Heart, Truck, ShieldCheck, Leaf, Minus, Plus } from "lucide-react";
 import { useCart } from "@/context/CartContext";
-import type { Product } from "@/data/products";
+import { WooProduct } from "@/lib/woocommerce-types";
 
 interface ProductInfoProps {
-    product: Product;
+    product: WooProduct;
+}
+
+// Helper to get badge color from tag name
+function getBadgeColor(tag: string): "green" | "orange" | "stone" | "blue" | "pink" | "default" {
+    const lowerTag = tag.toLowerCase();
+    if (lowerTag.includes("bio") || lowerTag.includes("naturel") || lowerTag.includes("vegan")) return "green";
+    if (lowerTag.includes("promo") || lowerTag.includes("offres")) return "orange";
+    if (lowerTag.includes("luxe") || lowerTag.includes("précieux")) return "stone";
+    if (lowerTag.includes("hydratant") || lowerTag.includes("eau")) return "blue";
+    if (lowerTag.includes("femme") || lowerTag.includes("teint")) return "pink";
+    return "stone";
 }
 
 export function ProductInfo({ product }: ProductInfoProps) {
     const [quantity, setQuantity] = useState(1);
     const { addItem } = useCart();
 
+    const price = parseFloat(product.price);
+    const regularPrice = product.regular_price ? parseFloat(product.regular_price) : price;
+    const isOnSale = product.on_sale && regularPrice > price;
+
+    // Parse rating safely
+    const ratingValue = parseFloat(product.average_rating || "0");
+
     const handleAddToCart = () => {
         addItem({
-            id: product.id,
-            title: product.title,
-            price: product.price,
-            image: product.image,
+            id: String(product.id),
+            title: product.name,
+            price: isNaN(price) ? 0 : price,
+            image: product.images[0]?.src || '/images/placeholder.png',
             quantity: quantity,
         });
     };
 
     return (
         <div className="flex flex-col gap-6">
-            {/* Badges */}
-            {product.badges && product.badges.length > 0 && (
+            {/* Badges mapped from Tags */}
+            {product.tags && product.tags.length > 0 && (
                 <div className="flex flex-wrap gap-2">
-                    {product.badges.map((badge, i) => (
+                    {product.tags.map((tag) => (
                         <span
-                            key={i}
-                            className={`text-xs font-bold uppercase px-3 py-1.5 rounded-full ${badge.color === "green" ? "bg-emerald-100 text-emerald-700" :
-                                badge.color === "orange" ? "bg-primary/15 text-primary" :
-                                    badge.color === "blue" ? "bg-blue-100 text-blue-700" :
-                                        badge.color === "pink" ? "bg-pink-100 text-pink-700" :
+                            key={tag.id}
+                            className={`text-xs font-bold uppercase px-3 py-1.5 rounded-full ${getBadgeColor(tag.name) === "green" ? "bg-emerald-100 text-emerald-700" :
+                                getBadgeColor(tag.name) === "orange" ? "bg-primary/15 text-primary" :
+                                    getBadgeColor(tag.name) === "blue" ? "bg-blue-100 text-blue-700" :
+                                        getBadgeColor(tag.name) === "pink" ? "bg-pink-100 text-pink-700" :
                                             "bg-stone-100 text-stone-700"
                                 }`}
                         >
-                            {badge.text}
+                            {tag.name}
                         </span>
                     ))}
                 </div>
@@ -47,35 +65,36 @@ export function ProductInfo({ product }: ProductInfoProps) {
 
             {/* Title */}
             <h1 className="font-serif text-3xl md:text-4xl font-bold text-stone-900 leading-tight">
-                {product.title}
+                {product.name}
             </h1>
 
             {/* Rating */}
             <div className="flex items-center gap-2">
                 <div className="flex items-center gap-0.5 text-amber-400">
                     {[...Array(5)].map((_, i) => (
-                        <Star key={i} className={`h-5 w-5 ${i < Math.floor(product.rating) ? "fill-current" : "stroke-current fill-none"}`} />
+                        <Star key={i} className={`h-5 w-5 ${i < Math.floor(ratingValue) ? "fill-current" : "stroke-current fill-none"}`} />
                     ))}
                 </div>
-                <span className="text-stone-500 text-sm">({product.reviews} avis)</span>
+                <span className="text-stone-500 text-sm">({product.rating_count} avis)</span>
             </div>
 
             {/* Description */}
-            <p className="text-stone-600 text-lg leading-relaxed">
-                {product.shortDescription}
-            </p>
+            <div
+                className="text-stone-600 text-lg leading-relaxed prose prose-stone"
+                dangerouslySetInnerHTML={{ __html: product.short_description || product.description }}
+            />
 
             {/* Price */}
             <div className="flex items-baseline gap-3 pt-2">
-                <span className="text-4xl font-bold text-primary">{product.price.toFixed(2)} €</span>
-                {product.originalPrice && (
-                    <span className="text-xl text-stone-400 line-through">{product.originalPrice.toFixed(2)} €</span>
+                <span className="text-4xl font-bold text-primary">{price.toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}</span>
+                {isOnSale && (
+                    <span className="text-xl text-stone-400 line-through">{regularPrice.toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}</span>
                 )}
             </div>
 
             {/* Weight */}
             {product.weight && (
-                <p className="text-sm text-stone-500">Contenance : {product.weight}</p>
+                <p className="text-sm text-stone-500">Poids : {product.weight}</p>
             )}
 
             {/* Quantity & Cart */}
@@ -132,7 +151,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
 
             {/* Stock */}
             <div className="flex items-center gap-2 text-sm">
-                {product.inStock ? (
+                {product.stock_status === 'instock' ? (
                     <>
                         <span className="h-2 w-2 bg-green-500 rounded-full"></span>
                         <span className="text-green-600 font-medium">En stock</span>

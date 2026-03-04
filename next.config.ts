@@ -3,6 +3,12 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   images: {
     formats: ['image/webp'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**', // Allow all domains temporarily for dev, or restrict to specific WP domain later
+      },
+    ],
   },
   headers: async () => [
     {

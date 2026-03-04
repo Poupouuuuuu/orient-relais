@@ -1,24 +1,135 @@
 "use client";
 
-import { useState } from "react";
-import { CheckCircle2, ChevronRight, CreditCard, Lock, MapPin, Truck, User } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { ChevronRight, CreditCard, Lock, MapPin, Truck, User, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Checkbox } from "@/components/ui/checkbox";
+import { MondialRelayWidget, RelayPoint } from "@/components/checkout/MondialRelayWidget";
 import { useCart } from "@/context/CartContext";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { getStripe } from "@/lib/stripe";
+
+// Stripe Payment Form component (used inside Elements provider)
+function StripePaymentForm({
+    amount,
+    onSuccess,
+    onBack,
+}: {
+    amount: number;
+    onSuccess: (paymentIntentId: string) => void;
+    onBack: () => void;
+}) {
+    const stripe = useStripe();
+    const elements = useElements();
+    const [isLoading, setIsLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!stripe || !elements) return;
+
+        setIsLoading(true);
+        setErrorMessage(null);
+
+        try {
+            const { error, paymentIntent } = await stripe.confirmPayment({
+                elements,
+                confirmParams: {
+                    return_url: `${window.location.origin}/checkout/success`,
+                },
+                redirect: "if_required",
+            });
+
+            if (error) {
+                setErrorMessage(error.message || "Une erreur est survenue lors du paiement.");
+            } else if (paymentIntent && paymentIntent.status === "succeeded") {
+                onSuccess(paymentIntent.id);
+            }
+        } catch (err) {
+            setErrorMessage("Une erreur inattendue est survenue.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return (
+        <form onSubmit={handleSubmit} className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
+            <section className="bg-white p-6 md:p-8 rounded-xl border border-stone-200 shadow-sm">
+                <h2 className="text-xl font-serif font-bold text-stone-900 mb-6 flex items-center gap-2">
+                    <CreditCard className="h-5 w-5 text-primary" />
+                    Paiement sécurisé
+                </h2>
+
+                <div className="mb-6">
+                    <PaymentElement
+                        options={{
+                            layout: "tabs",
+                        }}
+                    />
+                </div>
+
+                {errorMessage && (
+                    <div className="flex items-center gap-2 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+                        <AlertCircle className="h-4 w-4 flex-shrink-0" />
+                        <p>{errorMessage}</p>
+                    </div>
+                )}
+
+                <div className="flex items-center gap-2 text-xs text-stone-500 mt-4">
+                    <Lock className="h-3.5 w-3.5" />
+                    <span>Paiement 100% sécurisé par Stripe. Vos données sont chiffrées.</span>
+                </div>
+            </section>
+
+            <div className="flex justify-between">
+                <Button type="button" variant="outline" onClick={onBack}>
+                    Retour
+                </Button>
+                <Button
+                    type="submit"
+                    disabled={isLoading || !stripe || !elements}
+                    size="lg"
+                    className="font-bold w-full md:w-auto min-w-[200px]"
+                >
+                    {isLoading ? (
+                        <span className="flex items-center gap-2">
+                            <span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                            Traitement...
+                        </span>
+                    ) : (
+                        `Payer ${amount.toFixed(2)} €`
+                    )}
+                </Button>
+            </div>
+        </form>
+    );
+}
 
 export default function CheckoutPage() {
     const { items, subtotal, cartCount, clearCart } = useCart();
     const router = useRouter();
     const [step, setStep] = useState(1);
-    const [isLoading, setIsLoading] = useState(false);
+    const [clientSecret, setClientSecret] = useState<string | null>(null);
+    const [paymentError, setPaymentError] = useState<string | null>(null);
+    const [isCreatingIntent, setIsCreatingIntent] = useState(false);
 
-    // Mock form state
+    // Shipping method state
+    const [shippingMethod, setShippingMethod] = useState<"colissimo" | "mondialrelay">("colissimo");
+    const [selectedRelay, setSelectedRelay] = useState<RelayPoint | null>(null);
+
+    const shippingCost = shippingMethod === "mondialrelay" ? 3.90 : 4.90;
+    const total = subtotal + shippingCost;
+
+    const handleRelaySelect = useCallback((point: RelayPoint) => {
+        setSelectedRelay(point);
+    }, []);
+
+    // Form state
     const [formData, setFormData] = useState({
         email: "",
         firstName: "",
@@ -35,15 +146,50 @@ export default function CheckoutPage() {
         window.scrollTo(0, 0);
     };
 
-    const handlePayment = async () => {
-        setIsLoading(true);
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-        clearCart();
-        router.push("/checkout/success");
+    // Create PaymentIntent when moving to step 4 (payment)
+    const goToPayment = async () => {
+        setIsCreatingIntent(true);
+        setPaymentError(null);
+
+        try {
+            const response = await fetch("/api/create-payment-intent", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    items: items.map(item => ({
+                        id: item.id,
+                        title: item.title,
+                        price: item.price,
+                        quantity: item.quantity,
+                    })),
+                    shippingCost: Math.round(shippingCost * 100),
+                    customerInfo: formData,
+                }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || "Erreur lors de la préparation du paiement.");
+            }
+
+            setClientSecret(data.clientSecret);
+            setStep(4);
+            window.scrollTo(0, 0);
+        } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : "Erreur inconnue";
+            setPaymentError(message);
+        } finally {
+            setIsCreatingIntent(false);
+        }
     };
 
-    if (items.length === 0 && !isLoading) {
+    const handlePaymentSuccess = (paymentIntentId: string) => {
+        clearCart();
+        router.push(`/checkout/success?payment_intent=${paymentIntentId}`);
+    };
+
+    if (items.length === 0 && !clientSecret) {
         return (
             <div className="container mx-auto py-24 text-center">
                 <h1 className="text-3xl font-serif font-bold text-stone-900 mb-4">Votre panier est vide</h1>
@@ -145,55 +291,127 @@ export default function CheckoutPage() {
                                         <Truck className="h-5 w-5 text-primary" />
                                         Mode de livraison
                                     </h2>
-                                    <div className="space-y-4">
-                                        <div className="flex items-center space-x-4 border border-stone-200 rounded-lg p-4 cursor-pointer hover:border-primary bg-stone-50">
-                                            <Checkbox id="standard" checked={true} />
+                                    <div className="space-y-3">
+                                        {/* Option 1: Colissimo */}
+                                        <div
+                                            onClick={() => { setShippingMethod("colissimo"); setSelectedRelay(null); }}
+                                            className={`flex items-center space-x-4 border rounded-lg p-4 cursor-pointer transition-all ${shippingMethod === "colissimo"
+                                                    ? "border-primary bg-primary/5 ring-1 ring-primary"
+                                                    : "border-stone-200 hover:border-stone-300 bg-stone-50"
+                                                }`}
+                                        >
+                                            <div className={`h-5 w-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${shippingMethod === "colissimo" ? "border-primary" : "border-stone-300"
+                                                }`}>
+                                                {shippingMethod === "colissimo" && (
+                                                    <div className="h-2.5 w-2.5 rounded-full bg-primary" />
+                                                )}
+                                            </div>
                                             <div className="flex-1">
-                                                <Label htmlFor="standard" className="text-base font-medium cursor-pointer">Colissimo Domicile</Label>
-                                                <p className="text-sm text-stone-500">Livraison en 2-3 jours ouvrés</p>
+                                                <p className="text-base font-medium text-stone-900">🏠 Colissimo Domicile</p>
+                                                <p className="text-sm text-stone-500">Livraison à domicile en 2-3 jours ouvrés</p>
                                             </div>
                                             <span className="font-bold text-stone-900">4,90 €</span>
+                                        </div>
+
+                                        {/* Option 2: Mondial Relay */}
+                                        <div
+                                            onClick={() => setShippingMethod("mondialrelay")}
+                                            className={`flex items-center space-x-4 border rounded-lg p-4 cursor-pointer transition-all ${shippingMethod === "mondialrelay"
+                                                    ? "border-primary bg-primary/5 ring-1 ring-primary"
+                                                    : "border-stone-200 hover:border-stone-300 bg-stone-50"
+                                                }`}
+                                        >
+                                            <div className={`h-5 w-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${shippingMethod === "mondialrelay" ? "border-primary" : "border-stone-300"
+                                                }`}>
+                                                {shippingMethod === "mondialrelay" && (
+                                                    <div className="h-2.5 w-2.5 rounded-full bg-primary" />
+                                                )}
+                                            </div>
+                                            <div className="flex-1">
+                                                <p className="text-base font-medium text-stone-900">📦 Mondial Relay</p>
+                                                <p className="text-sm text-stone-500">Retrait en Point Relais — 3-5 jours ouvrés</p>
+                                            </div>
+                                            <span className="font-bold text-stone-900">3,90 €</span>
                                         </div>
                                     </div>
                                 </section>
 
+                                {/* Mondial Relay Widget */}
+                                {shippingMethod === "mondialrelay" && (
+                                    <section className="bg-white p-6 md:p-8 rounded-xl border border-stone-200 shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-300">
+                                        <h3 className="text-lg font-serif font-bold text-stone-900 mb-4 flex items-center gap-2">
+                                            <MapPin className="h-5 w-5 text-primary" />
+                                            Choisissez votre Point Relais
+                                        </h3>
+                                        <MondialRelayWidget
+                                            postcode={formData.zip}
+                                            onSelect={handleRelaySelect}
+                                        />
+                                        {selectedRelay && (
+                                            <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+                                                <p className="text-sm font-bold text-green-800">✅ Point Relais sélectionné :</p>
+                                                <p className="text-sm text-green-700 mt-1">
+                                                    {selectedRelay.name} — {selectedRelay.address}, {selectedRelay.postcode} {selectedRelay.city}
+                                                </p>
+                                            </div>
+                                        )}
+                                    </section>
+                                )}
+
+                                {paymentError && (
+                                    <div className="flex items-center gap-2 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+                                        <AlertCircle className="h-4 w-4 flex-shrink-0" />
+                                        <p>{paymentError}</p>
+                                    </div>
+                                )}
+
                                 <div className="flex justify-between">
                                     <Button variant="outline" onClick={() => setStep(2)}>Retour</Button>
-                                    <Button onClick={() => setStep(4)} size="lg" className="font-bold">
-                                        Vers le paiement <ChevronRight className="ml-2 h-4 w-4" />
+                                    <Button
+                                        onClick={goToPayment}
+                                        disabled={isCreatingIntent || (shippingMethod === "mondialrelay" && !selectedRelay)}
+                                        size="lg"
+                                        className="font-bold"
+                                    >
+                                        {isCreatingIntent ? (
+                                            <span className="flex items-center gap-2">
+                                                <span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                                Préparation...
+                                            </span>
+                                        ) : (
+                                            <>Vers le paiement <ChevronRight className="ml-2 h-4 w-4" /></>
+                                        )}
                                     </Button>
                                 </div>
                             </div>
                         )}
 
-                        {/* Step 4: Payment */}
-                        {step === 4 && (
-                            <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
-                                <section className="bg-white p-6 md:p-8 rounded-xl border border-stone-200 shadow-sm">
-                                    <h2 className="text-xl font-serif font-bold text-stone-900 mb-6 flex items-center gap-2">
-                                        <CreditCard className="h-5 w-5 text-primary" />
-                                        Paiement sécurisé
-                                    </h2>
-
-                                    <div className="bg-stone-50 p-6 rounded-lg text-center border border-dashed border-stone-300">
-                                        <Lock className="h-8 w-8 text-stone-400 mx-auto mb-2" />
-                                        <p className="text-stone-600 font-medium mb-1">Paiement simulé</p>
-                                        <p className="text-sm text-stone-500">Aucun débit ne sera effectué.</p>
-                                    </div>
-                                </section>
-
-                                <div className="flex justify-between">
-                                    <Button variant="outline" onClick={() => setStep(3)}>Retour</Button>
-                                    <Button
-                                        onClick={handlePayment}
-                                        disabled={isLoading}
-                                        size="lg"
-                                        className="font-bold w-full md:w-auto min-w-[200px]"
-                                    >
-                                        {isLoading ? "Traitement..." : `Payer ${(subtotal + 4.90).toFixed(2)} €`}
-                                    </Button>
-                                </div>
-                            </div>
+                        {/* Step 4: Stripe Payment */}
+                        {step === 4 && clientSecret && (
+                            <Elements
+                                stripe={getStripe()}
+                                options={{
+                                    clientSecret,
+                                    appearance: {
+                                        theme: "stripe",
+                                        variables: {
+                                            colorPrimary: "#b8860b",
+                                            colorBackground: "#ffffff",
+                                            colorText: "#1c1917",
+                                            colorDanger: "#dc2626",
+                                            fontFamily: "system-ui, sans-serif",
+                                            borderRadius: "8px",
+                                        },
+                                    },
+                                    locale: "fr",
+                                }}
+                            >
+                                <StripePaymentForm
+                                    amount={total}
+                                    onSuccess={handlePaymentSuccess}
+                                    onBack={() => setStep(3)}
+                                />
+                            </Elements>
                         )}
                     </div>
 
@@ -233,7 +451,7 @@ export default function CheckoutPage() {
                                 </div>
                                 <div className="flex justify-between text-stone-600">
                                     <span>Livraison</span>
-                                    <span>4,90 €</span>
+                                    <span>{shippingCost.toFixed(2)} €</span>
                                 </div>
                             </div>
 
@@ -243,7 +461,7 @@ export default function CheckoutPage() {
                                 <span className="font-bold text-lg text-stone-900">Total</span>
                                 <div className="text-right">
                                     <span className="text-xs text-stone-500 block mb-0.5">TVA incluse</span>
-                                    <span className="font-bold text-2xl text-primary">{(subtotal + 4.90).toFixed(2)} €</span>
+                                    <span className="font-bold text-2xl text-primary">{total.toFixed(2)} €</span>
                                 </div>
                             </div>
 

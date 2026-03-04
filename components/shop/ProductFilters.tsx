@@ -1,20 +1,18 @@
-"use client";
-
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { FilterConfig, getFiltersForCategory, ActiveFilters, filterProducts } from "@/lib/filters";
-import { Product } from "@/data/products";
+import { WooProduct } from "@/lib/woocommerce-types";
 import { Badge } from "@/components/ui/badge";
 import { X, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface ProductFiltersProps {
     category: string;
-    products: Product[];
-    onFilterChange: (filteredProducts: Product[]) => void;
+    products: WooProduct[];
+    onFilterChange: (filteredProducts: WooProduct[]) => void;
 }
 
 export function ProductFilters({ category, products, onFilterChange }: ProductFiltersProps) {
@@ -160,7 +158,7 @@ export function ProductFilters({ category, products, onFilterChange }: ProductFi
                                     {config.options.map(option => (
                                         <FilterCheckbox
                                             key={option.value}
-                                            id={`${config.key}-${option.value}`}
+                                            id={`mobile-${config.key}-${option.value}`}
                                             label={option.label}
                                             count={option.count}
                                             checked={((activeFilters[config.key] as string[]) || []).includes(option.value)}

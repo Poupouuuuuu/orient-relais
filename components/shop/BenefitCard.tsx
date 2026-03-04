@@ -3,8 +3,6 @@
 interface BenefitCardProps {
     category: string;
     items: string[];
-    icon?: any; // Kept for compatibility but unused
-    color?: string; // Kept for compatibility but unused
 }
 
 export function BenefitCard({ category, items }: BenefitCardProps) {

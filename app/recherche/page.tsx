@@ -3,32 +3,38 @@
 import { useSearchParams } from "next/navigation";
 import { ProductCard } from "@/components/shop/ProductCard";
 import { Button } from "@/components/ui/button";
-import { Suspense } from "react";
+import { Suspense, useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowLeft, Search, Sparkles } from "lucide-react";
-import { ALL_PRODUCTS } from "@/data/products";
+import { WooProduct } from "@/lib/woocommerce-types";
 
 function SearchResults() {
     const searchParams = useSearchParams();
     const query = searchParams.get("q")?.toLowerCase() || "";
+    const [results, setResults] = useState<WooProduct[]>([]);
+    const [loading, setLoading] = useState(false);
 
-    const results = query
-        ? ALL_PRODUCTS.filter(p =>
-            p.title.toLowerCase().includes(query) ||
-            p.category.includes(query) ||
-            p.shortDescription.toLowerCase().includes(query) ||
-            (p.benefits && p.benefits.some(b => b.toLowerCase().includes(query)))
-        ).map(p => ({
-            id: p.id,
-            title: p.title,
-            price: p.price,
-            image: p.image,
-            rating: p.rating,
-            reviews: p.reviews,
-            badges: p.badges,
-            slug: p.slug,
-        }))
-        : [];
+    useEffect(() => {
+        const fetchResults = async () => {
+            if (!query) {
+                setResults([]);
+                return;
+            }
+            setLoading(true);
+            try {
+                const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+                const products = await response.json();
+                setResults(products);
+            } catch (error) {
+                console.error("Search failed", error);
+                setResults([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchResults();
+    }, [query]);
 
     return (
         <div className="container mx-auto px-4 py-8 md:py-16">
@@ -40,11 +46,17 @@ function SearchResults() {
                     {query ? `Résultats pour "${query}"` : "Recherche"}
                 </h1>
                 <p className="text-stone-500">
-                    {results.length} produit(s) trouvé(s)
+                    {loading ? "Recherche en cours..." : `${results.length} produit(s) trouvé(s)`}
                 </p>
             </div>
 
-            {results.length > 0 ? (
+            {loading ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {[1, 2, 3, 4].map((n) => (
+                        <div key={n} className="h-[400px] bg-stone-100 rounded-3xl animate-pulse" />
+                    ))}
+                </div>
+            ) : results.length > 0 ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     {results.map((product) => (
                         <ProductCard key={product.id} product={product} />
@@ -97,17 +109,26 @@ function SearchResults() {
                         <Sparkles className="h-5 w-5 text-primary" /> Explorer par catégorie
                     </h2>
                     <div className="flex flex-wrap gap-3">
-                        <Link href="/categorie/savons">
+                        <Link href="/categorie/savons-dalep">
                             <Button variant="outline" className="rounded-full border-primary/30 hover:bg-primary/5 hover:border-primary">Savons d'Alep</Button>
-                        </Link>
-                        <Link href="/categorie/complements-alimentaires">
-                            <Button variant="outline" className="rounded-full border-primary/30 hover:bg-primary/5 hover:border-primary">Compléments</Button>
                         </Link>
                         <Link href="/categorie/huiles-essentielles">
                             <Button variant="outline" className="rounded-full border-primary/30 hover:bg-primary/5 hover:border-primary">Huiles Essentielles</Button>
                         </Link>
+                        <Link href="/categorie/complements">
+                            <Button variant="outline" className="rounded-full border-primary/30 hover:bg-primary/5 hover:border-primary">Compléments</Button>
+                        </Link>
+                        <Link href="/categorie/soins-et-beaute">
+                            <Button variant="outline" className="rounded-full border-primary/30 hover:bg-primary/5 hover:border-primary">Soins et Beauté</Button>
+                        </Link>
                         <Link href="/categorie/coffrets">
                             <Button variant="outline" className="rounded-full border-primary/30 hover:bg-primary/5 hover:border-primary">Coffrets</Button>
+                        </Link>
+                        <Link href="/categorie/epicerie-orientale">
+                            <Button variant="outline" className="rounded-full border-primary/30 hover:bg-primary/5 hover:border-primary">Épicerie Orientale</Button>
+                        </Link>
+                        <Link href="/categorie/miel">
+                            <Button variant="outline" className="rounded-full border-primary/30 hover:bg-primary/5 hover:border-primary">Miel</Button>
                         </Link>
                     </div>
                 </div>

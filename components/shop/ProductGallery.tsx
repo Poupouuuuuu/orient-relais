@@ -6,11 +6,20 @@ import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface ProductGalleryProps {
-    images: string[];
+    images: { src: string; name: string }[];
 }
 
 export function ProductGallery({ images }: ProductGalleryProps) {
     const [selectedImage, setSelectedImage] = useState(0);
+
+    // Guard clause for empty images
+    if (!images || images.length === 0) {
+        return (
+            <div className="relative aspect-square w-full overflow-hidden rounded-3xl bg-stone-100 flex items-center justify-center text-stone-400">
+                No Image Available
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col gap-4">
@@ -31,8 +40,8 @@ export function ProductGallery({ images }: ProductGalleryProps) {
                         className="relative w-full h-full"
                     >
                         <Image
-                            src={images[selectedImage]}
-                            alt="Product Image"
+                            src={images[selectedImage].src}
+                            alt={images[selectedImage].name}
                             fill
                             className="object-contain p-8 transition-transform duration-500 ease-out group-hover:scale-110"
                             priority
@@ -45,31 +54,33 @@ export function ProductGallery({ images }: ProductGalleryProps) {
             </div>
 
             {/* Thumbnails */}
-            <div className="flex gap-3 overflow-x-auto pb-2 px-1">
-                {images.map((img, index) => (
-                    <button
-                        key={index}
-                        onClick={() => setSelectedImage(index)}
-                        className={cn(
-                            "relative aspect-square w-20 flex-shrink-0 overflow-hidden rounded-xl transition-all duration-300",
-                            selectedImage === index
-                                ? "border-2 border-primary ring-2 ring-primary/20 shadow-lg shadow-primary/10"
-                                : "border-2 border-stone-200 hover:border-primary/50 hover:shadow-md"
-                        )}
-                    >
-                        <div className={cn(
-                            "absolute inset-0 bg-gradient-to-br from-stone-50 to-stone-100",
-                            selectedImage === index ? "opacity-0" : "opacity-50"
-                        )} />
-                        <Image
-                            src={img}
-                            alt={`Thumbnail ${index + 1}`}
-                            fill
-                            className="object-contain p-2"
-                        />
-                    </button>
-                ))}
-            </div>
+            {images.length > 1 && (
+                <div className="flex gap-3 overflow-x-auto pb-2 px-1">
+                    {images.map((img, index) => (
+                        <button
+                            key={index}
+                            onClick={() => setSelectedImage(index)}
+                            className={cn(
+                                "relative aspect-square w-20 flex-shrink-0 overflow-hidden rounded-xl transition-all duration-300",
+                                selectedImage === index
+                                    ? "border-2 border-primary ring-2 ring-primary/20 shadow-lg shadow-primary/10"
+                                    : "border-2 border-stone-200 hover:border-primary/50 hover:shadow-md"
+                            )}
+                        >
+                            <div className={cn(
+                                "absolute inset-0 bg-gradient-to-br from-stone-50 to-stone-100",
+                                selectedImage === index ? "opacity-0" : "opacity-50"
+                            )} />
+                            <Image
+                                src={img.src}
+                                alt={img.name}
+                                fill
+                                className="object-contain p-2"
+                            />
+                        </button>
+                    ))}
+                </div>
+            )}
         </div>
     );
 }

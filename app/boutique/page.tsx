@@ -1,5 +1,5 @@
 import { CategoryProductGrid } from "@/components/shop/CategoryProductGrid";
-import { ALL_PRODUCTS } from "@/data/products";
+import { fetchWooProducts } from "@/lib/woocommerce";
 import { Sparkles, ShoppingBag } from "lucide-react";
 
 export const metadata = {
@@ -7,9 +7,9 @@ export const metadata = {
     description: "Découvrez tous nos produits bio : savons d'Alep, compléments alimentaires, huiles essentielles, coffrets cadeaux et accessoires.",
 };
 
-export default function BoutiquePage() {
-    // Filter out products with price 0 or placeholder category
-    const products = ALL_PRODUCTS.filter(p => p.price > 0 && p.category !== "tous");
+export default async function BoutiquePage() {
+    // Fetch all products (page 1, big limit or multiple calls if needed, assuming < 100 for mock)
+    const products = await fetchWooProducts(1, 100);
 
     return (
         <div className="container mx-auto px-4 py-8">

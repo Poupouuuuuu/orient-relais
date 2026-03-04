@@ -1,6 +1,6 @@
 "use client";
 
-import { Header } from "@/components/layout/Header";
+import { HeaderCentered } from "@/components/layout/HeaderCentered";
 import { Footer } from "@/components/layout/Footer";
 import { CookieConsent } from "@/components/layout/CookieConsent";
 import { CartProvider } from "@/context/CartContext";
@@ -10,7 +10,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
     return (
         <CartProvider>
             <ScrollToTop />
-            <Header />
+            <HeaderCentered />
             <main className="flex-1">
                 {children}
             </main>

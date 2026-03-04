@@ -24,11 +24,13 @@ export function Header() {
     }, []);
 
     const productCategories = [
-        { href: "/categorie/savons", label: "Savons d'Alep", desc: "L'authentique soin millénaire" },
+        { href: "/categorie/savons-dalep", label: "Savons d'Alep", desc: "L'authentique soin millénaire" },
         { href: "/categorie/huiles-essentielles", label: "Huiles Essentielles", desc: "Pureté Terra Etica" },
-        { href: "/categorie/complements-alimentaires", label: "Compléments", desc: "Bien-être au naturel" },
-        { href: "/categorie/soins", label: "Soins & Cosmétiques", desc: "Beauté naturelle" },
+        { href: "/categorie/complements", label: "Compléments", desc: "Bien-être au naturel" },
+        { href: "/categorie/soins-et-beaute", label: "Soins et Beauté", desc: "Beauté naturelle" },
         { href: "/categorie/coffrets", label: "Coffrets Cadeaux", desc: "Pour faire plaisir" },
+        { href: "/categorie/epicerie-orientale", label: "Épicerie Orientale", desc: "Saveurs d'Orient" },
+        { href: "/categorie/miel", label: "Miel", desc: "Miels BIO de qualité" },
     ];
 
     return (
@@ -139,7 +141,7 @@ export function Header() {
                             Voir tous les produits
                         </Link>
 
-                        <div className="grid grid-cols-5 gap-6">
+                        <div className="grid grid-cols-4 gap-6">
                             {productCategories.map((cat, i) => (
                                 <Link
                                     key={cat.href}

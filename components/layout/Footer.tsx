@@ -32,16 +32,17 @@ export function Footer() {
                                 Votre boutique de produits naturels et bio depuis les Yvelines. Savons d'Alep, huiles essentielles et compléments alimentaires de qualité.
                             </p>
                         </div>
-                        {/* Social links — à remplir quand les comptes seront créés
+                        {/* Social links */}
                         <div className="flex gap-3">
-                            <a href="#" className="h-11 w-11 rounded-xl bg-stone-800/80 border border-stone-700 flex items-center justify-center hover:bg-primary hover:border-primary hover:shadow-lg hover:shadow-primary/20 transition-all duration-300 group">
+                            <Link href="#" className="h-11 w-11 rounded-xl bg-stone-800/80 border border-stone-700 flex items-center justify-center hover:bg-primary hover:border-primary hover:shadow-lg hover:shadow-primary/20 transition-all duration-300 group">
                                 <Instagram className="h-5 w-5 text-stone-400 group-hover:text-white transition-colors" />
-                            </a>
-                            <a href="#" className="h-11 w-11 rounded-xl bg-stone-800/80 border border-stone-700 flex items-center justify-center hover:bg-primary hover:border-primary hover:shadow-lg hover:shadow-primary/20 transition-all duration-300 group">
+                            </Link>
+                            {/* 
+                            <Link href="#" className="h-11 w-11 rounded-xl bg-stone-800/80 border border-stone-700 flex items-center justify-center hover:bg-primary hover:border-primary hover:shadow-lg hover:shadow-primary/20 transition-all duration-300 group">
                                 <span className="font-bold text-stone-400 group-hover:text-white flex items-center justify-center text-xs transition-colors">Tk</span>
-                            </a>
+                            </Link>
+                            */}
                         </div>
-                        */}
                     </div>
 
                     {/* Navigation */}
@@ -51,13 +52,15 @@ export function Footer() {
                             Navigation
                         </h4>
                         <ul className="space-y-3 text-sm text-stone-400">
-                            <li><Link href="/categorie/savons" className="hover:text-primary hover:translate-x-1 inline-block transition-all">Savons d'Alep</Link></li>
-                            <li><Link href="/categorie/complements-alimentaires" className="hover:text-primary hover:translate-x-1 inline-block transition-all">Compléments Bio</Link></li>
+                            <li><Link href="/categorie/savons-dalep" className="hover:text-primary hover:translate-x-1 inline-block transition-all">Savons d'Alep</Link></li>
                             <li><Link href="/categorie/huiles-essentielles" className="hover:text-primary hover:translate-x-1 inline-block transition-all">Huiles Essentielles</Link></li>
+                            <li><Link href="/categorie/complements" className="hover:text-primary hover:translate-x-1 inline-block transition-all">Compléments</Link></li>
+                            <li><Link href="/categorie/soins-et-beaute" className="hover:text-primary hover:translate-x-1 inline-block transition-all">Soins et Beauté</Link></li>
                             <li><Link href="/categorie/coffrets" className="hover:text-primary hover:translate-x-1 inline-block transition-all">Coffrets Cadeaux</Link></li>
+                            <li><Link href="/categorie/epicerie-orientale" className="hover:text-primary hover:translate-x-1 inline-block transition-all">Épicerie Orientale</Link></li>
+                            <li><Link href="/categorie/miel" className="hover:text-primary hover:translate-x-1 inline-block transition-all">Miel</Link></li>
                             <li><Link href="/blog" className="hover:text-primary hover:translate-x-1 inline-block transition-all">Le Journal</Link></li>
                             <li><Link href="/faq" className="hover:text-primary hover:translate-x-1 inline-block transition-all">FAQ</Link></li>
-                            <li><Link href="/a-propos" className="hover:text-primary hover:translate-x-1 inline-block transition-all">Notre Démarche</Link></li>
                         </ul>
                     </div>
 

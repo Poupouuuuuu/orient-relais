@@ -9,24 +9,32 @@ import { ProductCard } from "@/components/shop/ProductCard";
 import { ProductReviews } from "@/components/shop/ProductReviews";
 import { BenefitCard } from "@/components/shop/BenefitCard";
 import { parseBenefits } from "@/lib/benefits";
-import { getProductBySlug, ALL_PRODUCTS, CATEGORIES } from "@/data/products";
+import { fetchWooProductBySlug, fetchWooProductsByCategory } from "@/lib/woocommerce";
 import type { Metadata } from "next";
+import { WooProduct } from "@/lib/woocommerce-types";
+
+// Helper to clean HTML descriptions for metadata
+function stripHtml(html: string) {
+    return html.replace(/<[^>]*>/g, '');
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
     const slug = (await params).slug;
-    const product = getProductBySlug(slug);
+    const product = await fetchWooProductBySlug(slug);
 
     if (!product) {
         return { title: "Produit introuvable | Orient Relais" };
     }
 
+    const description = product.short_description ? stripHtml(product.short_description) : stripHtml(product.description).slice(0, 160);
+
     return {
-        title: `${product.title} | Orient Relais`,
-        description: product.shortDescription || product.description.replace(/<[^>]*>/g, '').slice(0, 160),
+        title: `${product.name} | Orient Relais`,
+        description: description,
         openGraph: {
-            title: product.title,
-            description: product.shortDescription || product.description.replace(/<[^>]*>/g, '').slice(0, 160),
-            images: [{ url: product.image, width: 600, height: 600, alt: product.title }],
+            title: product.name,
+            description: description,
+            images: product.images.map(img => ({ url: img.src, width: 800, height: 800, alt: img.alt || product.name })),
             type: "website",
         },
     };
@@ -34,51 +42,52 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
     const slug = (await params).slug;
-    const product = getProductBySlug(slug);
+    const product = await fetchWooProductBySlug(slug);
 
     if (!product) {
         notFound();
     }
 
     // Get related products from same category
-    const relatedProducts = ALL_PRODUCTS
-        .filter(p => p.category === product.category && p.id !== product.id)
-        .slice(0, 3)
-        .map(p => ({
-            id: p.id,
-            title: p.title,
-            price: p.price,
-            image: p.image,
-            rating: p.rating,
-            reviews: p.reviews,
-            badges: p.badges,
-            slug: p.slug,
-        }));
+    const categorySlug = product.categories[0]?.slug || "savons";
+    const allCategoryProducts = await fetchWooProductsByCategory(categorySlug);
+    const relatedProducts = allCategoryProducts
+        .filter(p => p.id !== product.id)
+        .slice(0, 4);
 
-    const category = CATEGORIES.find(c => c.slug === product.category);
-    const images = product.images || [product.image, product.image, product.image];
+    const categoryName = product.categories[0]?.name || "Boutique";
+
+    // Parse attributes
+    const benefitsAttribute = product.attributes.find(a => a.name === "Benefits" || a.name === "Bienfaits");
+    const ingredientsAttribute = product.attributes.find(a => a.name === "Ingredients" || a.name === "Ingrédients");
+
+    // Parse meta data for extra tabs (if present in Woo)
+    // In mock data specific keys might be missing so we handle gracefully
+    const usageMeta = product.meta_data.find(m => m.key === "Usage" || m.key === "Conseils d'utilisation");
+    const characteristicsMeta = product.meta_data.find(m => m.key === "Characteristics" || m.key === "Caractéristiques");
+    const detailsMeta = product.meta_data.find(m => m.key === "Details");
 
     const jsonLd = {
         "@context": "https://schema.org",
         "@type": "Product",
-        name: product.title,
-        image: `https://orient-relais.com${product.image}`,
-        description: product.shortDescription || product.description.replace(/<[^>]*>/g, '').slice(0, 200),
+        name: product.name,
+        image: product.images.map(i => i.src),
+        description: stripHtml(product.description).slice(0, 200),
         brand: {
             "@type": "Brand",
-            name: category?.title || "Orient Relais",
+            name: "Orient Relais",
         },
         offers: {
             "@type": "Offer",
             url: `https://orient-relais.com/produit/${product.slug}`,
             priceCurrency: "EUR",
-            price: product.price.toFixed(2),
-            availability: product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+            price: product.price,
+            availability: product.stock_status === 'instock' ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
         },
         aggregateRating: {
             "@type": "AggregateRating",
-            ratingValue: product.rating.toString(),
-            reviewCount: product.reviews.toString(),
+            ratingValue: product.average_rating || "5",
+            reviewCount: product.rating_count || 1,
         },
     };
 
@@ -95,14 +104,14 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                 <ChevronRight className="h-4 w-4 text-primary/40 flex-shrink-0" />
                 <Link href="/boutique" className="hover:text-primary transition-colors">Boutique</Link>
                 <ChevronRight className="h-4 w-4 text-primary/40 flex-shrink-0" />
-                <Link href={`/categorie/${product.category}`} className="hover:text-primary transition-colors">{category?.title || product.category}</Link>
+                <Link href={`/categorie/${categorySlug}`} className="hover:text-primary transition-colors">{categoryName}</Link>
                 <ChevronRight className="h-4 w-4 text-primary/40 flex-shrink-0" />
-                <span className="text-primary font-semibold truncate max-w-[200px]">{product.title}</span>
+                <span className="text-primary font-semibold truncate max-w-[200px]">{product.name}</span>
             </nav>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 mb-16">
                 {/* Gallery */}
-                <ProductGallery images={images} />
+                <ProductGallery images={product.images.map(img => ({ src: img.src, name: img.name || product.name }))} />
 
                 {/* Info & Conversion */}
                 <ProductInfo product={product} />
@@ -115,21 +124,23 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                         <TabsTrigger value="description" className="rounded-none border-b-2 border-transparent px-0 py-3 font-serif text-lg text-stone-500 data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none hover:text-stone-800 transition-colors">
                             Description
                         </TabsTrigger>
-                        <TabsTrigger value="bienfaits" className="rounded-none border-b-2 border-transparent px-0 py-3 font-serif text-lg text-stone-500 data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none hover:text-stone-800 transition-colors">
-                            Bienfaits
-                        </TabsTrigger>
-                        {product.usage && (
+                        {benefitsAttribute && benefitsAttribute.options.length > 0 && (
+                            <TabsTrigger value="bienfaits" className="rounded-none border-b-2 border-transparent px-0 py-3 font-serif text-lg text-stone-500 data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none hover:text-stone-800 transition-colors">
+                                Bienfaits
+                            </TabsTrigger>
+                        )}
+                        {usageMeta && (
                             <TabsTrigger value="conseils" className="rounded-none border-b-2 border-transparent px-0 py-3 font-serif text-lg text-stone-500 data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none hover:text-stone-800 transition-colors">
                                 Conseils d'utilisation
                             </TabsTrigger>
                         )}
-                        {product.characteristics && (
+                        {characteristicsMeta && (
                             <TabsTrigger value="caracteristiques" className="rounded-none border-b-2 border-transparent px-0 py-3 font-serif text-lg text-stone-500 data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none hover:text-stone-800 transition-colors">
                                 Caractéristiques
                             </TabsTrigger>
                         )}
                         <TabsTrigger value="avis" className="rounded-none border-b-2 border-transparent px-0 py-3 font-serif text-lg text-stone-500 data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none hover:text-stone-800 transition-colors">
-                            Avis ({product.reviews})
+                            Avis ({product.rating_count})
                         </TabsTrigger>
                     </TabsList>
 
@@ -137,11 +148,12 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                         <div className="prose prose-stone max-w-none prose-p:leading-relaxed prose-lg prose-headings:font-serif prose-h3:text-2xl prose-h4:text-lg prose-h4:text-primary">
                             <div dangerouslySetInnerHTML={{ __html: product.description }} />
 
-                            <h4 className="text-sm font-serif font-bold text-stone-900 uppercase tracking-widest mb-6">
+                            {/* Certifications (Tags) */}
+                            <h4 className="text-sm font-serif font-bold text-stone-900 uppercase tracking-widest mb-6 mt-8">
                                 Certifications
                             </h4>
                             <div className="flex flex-wrap gap-8 items-center opacity-90">
-                                {product.certifications?.map((cert) => {
+                                {product.tags.map((tag) => {
                                     const certMap: Record<string, { src: string; alt: string; height: string }> = {
                                         "bio": { src: "/images/certifications/label-bio.png", alt: "Cosmétique Bio", height: "h-12" },
                                         "cosmos": { src: "/images/certifications/label-cosmos.png", alt: "Cosmos Organic", height: "h-10" },
@@ -151,42 +163,36 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                                         "gelules": { src: "/images/certifications/label-gelules.png", alt: "Gélules Végétales", height: "h-12" },
                                         "vegan": { src: "/images/certifications/label-vegan.png", alt: "Vegan & Ayurvédique", height: "h-12" },
                                     };
-                                    const c = certMap[cert];
+                                    // Match loose
+                                    const key = Object.keys(certMap).find(k => tag.slug.includes(k) || tag.name.toLowerCase().includes(k));
+                                    const c = key ? certMap[key] : null;
+
                                     return c ? (
-                                        <div key={cert} className="transition-all duration-300 hover:scale-110 ease-out cursor-help" title={c.alt}>
+                                        <div key={tag.id} className="transition-all duration-300 hover:scale-110 ease-out cursor-help" title={c.alt}>
                                             <Image src={c.src} alt={c.alt} width={80} height={60} className={`w-auto ${c.height} object-contain`} />
                                         </div>
                                     ) : null;
                                 })}
                             </div>
 
-                            {product.details && (
+                            {/* Details Table */}
+                            {detailsMeta && (
                                 <div className="mt-10 mb-8 border-t border-stone-100 pt-8">
                                     <h4 className="text-sm font-serif font-bold text-stone-900 uppercase tracking-widest mb-6">
                                         Plus d'informations
                                     </h4>
-                                    <div className="bg-stone-50 rounded-2xl overflow-hidden border border-stone-100">
-                                        <table className="w-full text-sm text-left">
-                                            <tbody>
-                                                {Object.entries(product.details).map(([key, value], i) => (
-                                                    <tr key={key} className={`border-b border-stone-100 last:border-0 ${i % 2 === 0 ? "bg-stone-50/50" : "bg-white"}`}>
-                                                        <th className="py-3 px-6 font-medium text-stone-900 w-1/3">{key}</th>
-                                                        <td className="py-3 px-6 text-stone-600">{value}</td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                    <div dangerouslySetInnerHTML={{ __html: detailsMeta.value }} />
                                 </div>
                             )}
 
-                            {product.ingredients && (
+                            {/* Ingredients */}
+                            {ingredientsAttribute && ingredientsAttribute.options.length > 0 && (
                                 <div className="mt-8 p-6 bg-stone-50 rounded-2xl border border-stone-200">
                                     <h4 className="flex items-center gap-2 !mt-0">
                                         <span>🧪</span> Composition
                                     </h4>
                                     <ul className="!mb-0">
-                                        {product.ingredients.map((ing, i) => (
+                                        {ingredientsAttribute.options.map((ing, i) => (
                                             <li key={i}>{ing}</li>
                                         ))}
                                     </ul>
@@ -196,49 +202,39 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                     </TabsContent>
 
                     <TabsContent value="bienfaits" className="pt-8">
-                        {product.benefits && product.benefits.length > 0 && (
+                        {benefitsAttribute && benefitsAttribute.options.length > 0 ? (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                                {parseBenefits(product.benefits).map((benefit, i) => (
+                                {parseBenefits(benefitsAttribute.options).map((benefit, i) => (
                                     <BenefitCard
                                         key={i}
                                         category={benefit.category}
                                         items={benefit.items}
-                                        icon={benefit.icon}
-                                        color={benefit.color}
                                     />
                                 ))}
                             </div>
-                        )}
-
-                        {product.detailedBenefits && (
-                            <div className={`prose prose-stone max-w-none prose-headings:font-serif prose-h4:text-lg prose-h4:text-primary prose-li:marker:text-primary ${product.benefits && product.benefits.length > 0 ? "mt-12 pt-8 border-t border-stone-100" : ""}`}>
-                                <div dangerouslySetInnerHTML={{ __html: product.detailedBenefits }} />
-                            </div>
-                        )}
-
-                        {(!product.benefits || product.benefits.length === 0) && !product.detailedBenefits && (
+                        ) : (
                             <p className="text-stone-500">Information non disponible pour ce produit.</p>
                         )}
                     </TabsContent>
 
-                    {product.usage && (
+                    {usageMeta && (
                         <TabsContent value="conseils" className="pt-8">
                             <div className="prose prose-stone max-w-none prose-headings:font-serif prose-h4:text-lg prose-h4:text-primary prose-ol:space-y-2 prose-li:marker:text-primary">
-                                <div dangerouslySetInnerHTML={{ __html: product.usage }} />
+                                <div dangerouslySetInnerHTML={{ __html: usageMeta.value }} />
                             </div>
                         </TabsContent>
                     )}
 
-                    {product.characteristics && (
+                    {characteristicsMeta && (
                         <TabsContent value="caracteristiques" className="pt-8">
                             <div className="prose prose-stone max-w-none prose-headings:font-serif prose-h4:text-lg prose-h4:text-primary prose-ul:space-y-2 prose-li:marker:text-primary">
-                                <div dangerouslySetInnerHTML={{ __html: product.characteristics }} />
+                                <div dangerouslySetInnerHTML={{ __html: characteristicsMeta.value }} />
                             </div>
                         </TabsContent>
                     )}
 
                     <TabsContent value="avis" className="pt-8">
-                        <ProductReviews rating={product.rating} count={product.reviews} />
+                        <ProductReviews rating={parseFloat(product.average_rating || "0")} count={product.rating_count} />
                     </TabsContent>
                 </Tabs>
             </div>

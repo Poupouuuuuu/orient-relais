@@ -52,14 +52,17 @@ export default function NotFound() {
                         <Sparkles className="h-4 w-4 text-primary" /> Catégories populaires
                     </p>
                     <div className="flex flex-wrap justify-center gap-2">
-                        <Link href="/categorie/savons" className="px-4 py-2 bg-gradient-to-r from-primary/10 to-amber-50 rounded-full text-sm text-stone-700 hover:from-primary/20 hover:to-amber-100 transition-all border border-primary/20">
+                        <Link href="/categorie/savons-dalep" className="px-4 py-2 bg-gradient-to-r from-primary/10 to-amber-50 rounded-full text-sm text-stone-700 hover:from-primary/20 hover:to-amber-100 transition-all border border-primary/20">
                             Savons d'Alep
                         </Link>
-                        <Link href="/categorie/complements-alimentaires" className="px-4 py-2 bg-gradient-to-r from-primary/10 to-amber-50 rounded-full text-sm text-stone-700 hover:from-primary/20 hover:to-amber-100 transition-all border border-primary/20">
+                        <Link href="/categorie/complements" className="px-4 py-2 bg-gradient-to-r from-primary/10 to-amber-50 rounded-full text-sm text-stone-700 hover:from-primary/20 hover:to-amber-100 transition-all border border-primary/20">
                             Compléments
                         </Link>
                         <Link href="/categorie/huiles-essentielles" className="px-4 py-2 bg-gradient-to-r from-primary/10 to-amber-50 rounded-full text-sm text-stone-700 hover:from-primary/20 hover:to-amber-100 transition-all border border-primary/20">
                             Huiles Essentielles
+                        </Link>
+                        <Link href="/categorie/soins-et-beaute" className="px-4 py-2 bg-gradient-to-r from-primary/10 to-amber-50 rounded-full text-sm text-stone-700 hover:from-primary/20 hover:to-amber-100 transition-all border border-primary/20">
+                            Soins et Beauté
                         </Link>
                         <Link href="/categorie/coffrets" className="px-4 py-2 bg-gradient-to-r from-primary/10 to-amber-50 rounded-full text-sm text-stone-700 hover:from-primary/20 hover:to-amber-100 transition-all border border-primary/20">
                             Coffrets

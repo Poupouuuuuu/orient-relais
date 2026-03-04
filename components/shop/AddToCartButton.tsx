@@ -4,15 +4,10 @@ import { ShoppingBag, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
 import { useState } from "react";
+import { WooProduct } from "@/lib/woocommerce-types";
 
 interface AddToCartButtonProps {
-    product: {
-        id: string;
-        title: string;
-        price: number;
-        image: string;
-        slug: string;
-    };
+    product: WooProduct;
     variant?: string;
     className?: string;
     fullWidth?: boolean;
@@ -24,11 +19,15 @@ export function AddToCartButton({ product, variant = "Standard", className, full
 
     const handleAdd = (e: React.MouseEvent) => {
         e.preventDefault(); // Prevent link navigation if inside a Link
+
+        const price = parseFloat(product.price);
+        const imageSrc = product.images && product.images.length > 0 ? product.images[0].src : '/images/placeholder.png';
+
         addItem({
-            id: product.id,
-            title: product.title,
-            price: product.price,
-            image: product.image,
+            id: String(product.id),
+            title: product.name,
+            price: isNaN(price) ? 0 : price,
+            image: imageSrc,
             variant: variant,
             quantity: 1
         });

@@ -1,10 +1,22 @@
 import type { MetadataRoute } from "next";
-import { ALL_PRODUCTS, CATEGORIES } from "@/data/products";
+import { fetchWooProducts } from "@/lib/woocommerce";
 import { ARTICLES } from "@/data/articles";
 
 const BASE_URL = "https://orient-relais.com";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+// Manual categories list since we don't have a dedicated endpoint yet
+const CATEGORIES = [
+    { slug: "savons" },
+    { slug: "huiles-essentielles" },
+    { slug: "complements-alimentaires" },
+    { slug: "coffrets" },
+    { slug: "soins" },
+    { slug: "accessoires" },
+];
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+    const products = await fetchWooProducts(1, 100);
+
     // Static pages
     const staticPages: MetadataRoute.Sitemap = [
         { url: BASE_URL, lastModified: new Date(), changeFrequency: "weekly", priority: 1.0 },
@@ -27,14 +39,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }));
 
     // Product pages
-    const productPages: MetadataRoute.Sitemap = ALL_PRODUCTS
-        .filter((p) => p.price > 0)
-        .map((product) => ({
-            url: `${BASE_URL}/produit/${product.slug}`,
-            lastModified: new Date(),
-            changeFrequency: "weekly" as const,
-            priority: 0.7,
-        }));
+    const productPages: MetadataRoute.Sitemap = products.map((product) => ({
+        url: `${BASE_URL}/produit/${product.slug}`,
+        lastModified: new Date(),
+        changeFrequency: "weekly" as const,
+        priority: 0.7,
+    }));
 
     // Blog articles
     const blogPages: MetadataRoute.Sitemap = ARTICLES.map((article) => ({
